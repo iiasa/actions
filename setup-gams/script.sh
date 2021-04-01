@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Change to the direction containing the action's code
 pushd $GITHUB_ACTION_PATH
