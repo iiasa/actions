@@ -1,0 +1,30 @@
+name: "Setup GAMS"
+description: "Install the GAMS executable."
+inputs:
+  version:
+    description: "Version of GAMS to install"
+    required: false
+    default: "25.1.1"
+  use-cache:
+    description: "Cache the GAMS installer."
+    required: false
+    default: true
+runs:
+  using: "composite"
+  steps:
+    - name: Cache GAMS installer
+      if: ${{ inputs.use-cache }}
+      uses: actions/cache@v2
+      with:
+        path: |
+          gams
+        key: ${{runner.os}-gams${{ inputs.version }}
+        restore-keys: |
+          ${{ runner.os }}-gams${{ inputs.version }}-
+          ${{ runner.os }}-
+    - name: Install GAMS and Graphviz
+      env:
+        CI_OS: ${{ runner.os }}
+        GAMS_VERSION: ${{ inputs.version }}
+      run: ${{ github.action_path }}/script.sh
+      shell: bash
