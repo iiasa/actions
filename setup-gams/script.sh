@@ -3,7 +3,7 @@
 #
 # The environment variables CI_OS and GAMS_VERSION must be set.
 
-BASE=$PWD/gams
+BASE=$GITHUB_ACTION_PATH/gams
 mkdir -p $BASE
 
 # GAMS source URL fragment, and path fragment for extracted files
@@ -42,7 +42,7 @@ if [ $GAMS_OS = "windows" ]; then
   cat << EOF >install-gams.ps1
 
 # Windows-format equivalent of BASE
-\$BASE = "\$PWD\gams"
+\$BASE = "\$GITHUB_ACTION_PATH\gams"
 
 # Install to the same directory as Linux/macOS unzip
 Start-Process "\$BASE\gams.exe" "/SP-", "/SILENT", "/DIR=\$BASE\\$DEST", \`
