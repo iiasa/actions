@@ -1,13 +1,14 @@
 #!/bin/sh
-# Install GAMS.
-#
-# The environment variables CI_OS and GAMS_VERSION must be set.
 
-BASE=$GITHUB_ACTION_PATH/gams
-mkdir -p $BASE
+# Change to the direction containing the action's code
+pushd $GITHUB_ACTION_PATH
+
+# Create a temporary directory
+mkdir -p gams
+BASE=$(realpath gams)
 
 # GAMS source URL fragment, and path fragment for extracted files
-case $CI_OS in
+case $RUNNER_OS in
   Linux)
     GAMS_OS=linux
     FRAGMENT=${GAMS_OS}_x64_64_sfx
@@ -26,12 +27,14 @@ esac
 BASE_URL=https://d37drm4t2jghv5.cloudfront.net/distributions
 URL=$BASE_URL/$GAMS_VERSION/$GAMS_OS/$FRAGMENT.exe
 
-if [ -x $BASE/gams.exe ]; then
+# NB this currently has no effect, because caching is not configured for this
+#    action
+if [ -x gams.exe ]; then
   # Don't retrieve if the remote file is older than the cached one
-  TIME_CONDITION=--remote-time --time-cond $BASE/gams.exe
+  TIME_CONDITION=--remote-time --time-cond gams.exe
 fi
 
-curl --silent $URL --output $BASE/gams.exe $TIME_CONDITION
+curl --silent $URL --output gams.exe $TIME_CONDITION
 
 # TODO confirm checksum
 
@@ -39,28 +42,25 @@ curl --silent $URL --output $BASE/gams.exe $TIME_CONDITION
 DEST=gams$(echo $GAMS_VERSION | cut -d. -f1-2)_$FRAGMENT
 
 if [ $GAMS_OS = "windows" ]; then
+  # Write a PowerShell script. Install to the same directory as *nix unzip
   cat << EOF >install-gams.ps1
-
-# Windows-format equivalent of BASE
-\$BASE = "\$GITHUB_ACTION_PATH\gams"
-
-# Install to the same directory as Linux/macOS unzip
-Start-Process "\$BASE\gams.exe" "/SP-", "/SILENT", "/DIR=\$BASE\\$DEST", \`
-  "/NORESTART" -Wait
-
+Start-Process "gams.exe" "/SP-", "/SILENT", "/DIR=$GHA_PATH\\$DEST", "/NORESTART" -Wait
 EOF
   cat install-gams.ps1
+
+  # Invoke the script
   pwsh install-gams.ps1
 else
   # Extract files
-  unzip -q -d $BASE $BASE/gams.exe
+  unzip -q gams.exe
 fi
 
-# Update PATH
-export PATH=$BASE/$DEST:$PATH
+# Write to special GitHub Actions environment variable to update $PATH for
+# subsequent workflow steps
+echo "$GITHUB_ACTION_PATH/$DEST" >> $GITHUB_PATH
 
-# For GitHub Actions
-echo "$BASE/$DEST" >> $GITHUB_PATH
-
-# Show location
+# Confirm the executable is on $PATH
 which gams
+
+# Return to the last directory
+popd

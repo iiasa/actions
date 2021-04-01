@@ -32,8 +32,9 @@ runs:
 
   - name: Install GAMS
     env:
-      CI_OS: ${{ runner.os }}
+      RUNNER_OS: ${{ runner.os }}
       GAMS_VERSION: ${{ inputs.version }}
+      GHA_PATH: ${{ github.action_path }}
     run: ${GITHUB_ACTION_PATH}/script.sh
     shell: bash
 
