@@ -1,5 +1,6 @@
 name: "Setup GAMS"
 description: "Install the GAMS executable."
+
 inputs:
   version:
     description: "Version of GAMS to install"
@@ -9,22 +10,37 @@ inputs:
     description: "Cache the GAMS installer."
     required: false
     default: true
+  license:
+    description: "Content for gamslice.txt, e.g. from a repo secret."
+    require: false
+    default: null
+
 runs:
   using: "composite"
   steps:
-    - name: Cache GAMS installer
-      if: ${{ inputs.use-cache }}
-      uses: actions/cache@v2
-      with:
-        path: |
-          gams
-        key: ${{runner.os}-gams${{ inputs.version }}
-        restore-keys: |
-          ${{ runner.os }}-gams${{ inputs.version }}-
-          ${{ runner.os }}-
-    - name: Install GAMS and Graphviz
-      env:
-        CI_OS: ${{ runner.os }}
-        GAMS_VERSION: ${{ inputs.version }}
-      run: ${{ github.action_path }}/script.sh
-      shell: bash
+  - name: Cache GAMS installer
+    if: ${{ inputs.use-cache }}
+    uses: actions/cache@v2
+    with:
+      path: |
+        gams
+      key: ${{runner.os}-gams${{ inputs.version }}
+      restore-keys: |
+        ${{ runner.os }}-gams${{ inputs.version }}-
+        ${{ runner.os }}-
+
+  - name: Install GAMS
+    env:
+      CI_OS: ${{ runner.os }}
+      GAMS_VERSION: ${{ inputs.version }}
+    run: ${{ github.action_path }}/script.sh
+    shell: bash
+
+  - name: Set up GAMS license
+    if: ${{ inputs.license }}
+    env:
+      GAMS_LICENSE: ${{ inputs.license }}
+    run: |
+      echo "$GAMS_LICENSE" > $(dirname $(which gams))/gamslice.txt
+      gams
+    shell: bash
