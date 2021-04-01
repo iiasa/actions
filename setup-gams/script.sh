@@ -8,15 +8,15 @@ mkdir -p $BASE
 
 # GAMS source URL fragment, and path fragment for extracted files
 case $CI_OS in
-  linux* | ubuntu*)
+  Linux)
     GAMS_OS=linux
     FRAGMENT=${GAMS_OS}_x64_64_sfx
     ;;
-  macos*)
+  macOS)
     GAMS_OS=macosx
     FRAGMENT=osx_x64_64_sfx
     ;;
-  windows*)
+  Windows)
     GAMS_OS=windows
     FRAGMENT=${GAMS_OS}_x64_64
     ;;
