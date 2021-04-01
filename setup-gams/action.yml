@@ -6,31 +6,21 @@ inputs:
     description: "Content for gamslice.txt, e.g. from a repo secret."
     require: false
     default: null
-  # use-cache:
-  #   description: "Cache the GAMS installer."
-  #   required: false
-  #   default: true
   version:
     description: "Version of GAMS to install"
     required: false
     default: "25.1.1"
 
+outputs:
+  cache-path:
+    description: "Path to the GAMS installer, e.g. for use with actions/cache."
+    value: ${{ steps.install.outputs.cache-path }}
+
 runs:
   using: "composite"
   steps:
-  # Disabled: recursive usage is not supported
-  # - name: Cache GAMS installer
-  #   if: ${{ inputs.use-cache }}
-  #   uses: actions/cache@v2
-  #   with:
-  #     path: |
-  #       gams
-  #     key: ${{runner.os}-gams${{ inputs.version }}
-  #     restore-keys: |
-  #       ${{ runner.os }}-gams${{ inputs.version }}-
-  #       ${{ runner.os }}-
-
   - name: Install GAMS
+    id: install
     env:
       RUNNER_OS: ${{ runner.os }}
       GAMS_VERSION: ${{ inputs.version }}
