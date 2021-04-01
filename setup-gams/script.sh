@@ -62,8 +62,5 @@ else
   unzip -q gams.exe
 fi
 
-# Confirm the executable is on $PATH
-which gams
-
 # Return to the last directory
 popd

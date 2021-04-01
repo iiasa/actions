@@ -34,6 +34,9 @@ runs:
     run: |
       if [ -n "$GAMS_LICENSE" ]; then
         echo "$GAMS_LICENSE" > $(dirname $(which gams))/gamslice.txt
-        gams
       fi
+    shell: bash
+
+  - name: Confirm GAMS is on PATH & license is recognized
+    run: gams
     shell: bash
