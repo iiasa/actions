@@ -2,7 +2,7 @@ name: "Setup conda"
 description: "Install conda Miniconda or Anaconda."
 
 inputs:
-  conda_type:
+  installer:
     description: "Version of conda to install"
     required: true
     default: "Anaconda"
@@ -19,7 +19,7 @@ runs:
     id: install
     env:
       RUNNER_OS: ${{ runner.os }}
-      CONDA_TYPE: ${{ inputs.version }}
+      INSTALLER: ${{ inputs.installer }}
       GHA_PATH: ${{ github.action_path }}
     run: ${GITHUB_ACTION_PATH}/script.sh
     shell: bash

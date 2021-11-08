@@ -8,7 +8,7 @@ mkdir -p conda
 BASE=$(realpath conda)
 
 # GAMS source URL fragment, and path fragment for extracted files
-if [$CONDA_TYPE] == 'Anaconda'; then
+if [$INSTALLER] == 'anaconda'; then
   case $RUNNER_OS in
     Linux)
       CACHE_PATH="$GITHUB_ACTION_PATH/conda.sh"
@@ -27,7 +27,7 @@ if [$CONDA_TYPE] == 'Anaconda'; then
       ;;
   esac
 
-if [$CONDA_TYPE] == 'Miniconda'; then
+if [$INSTALLER] == 'miniconda'; then
   case $RUNNER_OS in
     Linux)
       PATH_ENDING = conda.sh
@@ -55,11 +55,11 @@ DEST=gams$(echo $GAMS_VERSION | cut -d. -f1-2)_$FRAGMENT
 
 
 # Retrieve
-if [$CONDA_TYPE] == 'Anaconda'; then
+if [$INSTALLER] == 'Anaconda'; then
   BASE_URL=https://repo.anaconda.com/archive/Anaconda3-
-  URL=$BASE_URL/$CONDA_TYPE3/$GAMS_OS/$FRAGMENT
+  URL=$BASE_URL/$FRAGMENT
 
-if [$CONDA_TYPE] == 'Miniconda'; then
+if [$INSTALLER] == 'Miniconda'; then
   BASE_URL=https://repo.anaconda.com/miniconda/Miniconda3-
   URL=$BASE_URL/$FRAGMENT
 

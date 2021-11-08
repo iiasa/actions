@@ -22,8 +22,8 @@ jobs:
     - name: Setup conda
       uses: iiasa/actions/setup-conda@main
       with:
-        conda_type: ${{ matrix.conda }}
-        
+        installer: ${{ matrix.conda }}
+
     - name: Check conda version
       run: conda --version
 
