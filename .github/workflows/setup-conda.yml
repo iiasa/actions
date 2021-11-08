@@ -23,6 +23,8 @@ jobs:
       uses: iiasa/actions/setup-conda@main
       with:
         installer: ${{ matrix.conda }}
+        version_anaconda: 2021.05
+        version_miniconda: latest
 
     - name: Check conda version
       run: conda --version

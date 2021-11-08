@@ -13,17 +13,17 @@ if [$INSTALLER] == 'anaconda'; then
     Linux)
       CACHE_PATH="$GITHUB_ACTION_PATH/conda.sh"
       GAMS_OS=Linux
-      FRAGMENT=2021.05-${GAMS_OS}-x86_64.sh
+      FRAGMENT=$VERSION_ANACONDA-${GAMS_OS}-x86_64.sh
       ;;
     macOS)
       CACHE_PATH="$GITHUB_ACTION_PATH/conda.pkg"
       GAMS_OS=MacOSX
-      FRAGMENT=2021.05-${GAMS_OS}-x86_64.pkg
+      FRAGMENT=$VERSION_ANACONDA-${GAMS_OS}-x86_64.pkg
       ;;
     Windows)
       CACHE_PATH="$GHA_PATH\\conda.exe"
       GAMS_OS=Windows
-      FRAGMENT=2021.05-${GAMS_OS}-x86_64.exe
+      FRAGMENT=$VERSION_ANACONDA-${GAMS_OS}-x86_64.exe
       ;;
   esac
 
@@ -33,19 +33,19 @@ if [$INSTALLER] == 'miniconda'; then
       PATH_ENDING = conda.sh
       CACHE_PATH="$GITHUB_ACTION_PATH/$PATH_ENDING"
       GAMS_OS=Linux
-      FRAGMENT=latest-${GAMS_OS}-x86_64.sh
+      FRAGMENT=$VERSION_MINICONDA-${GAMS_OS}-x86_64.sh
       ;;
     MacOS)
       PATH_ENDING = conda.pkg
       CACHE_PATH="$GITHUB_ACTION_PATH/$PATH_ENDING"
       GAMS_OS=MacOSX
-      FRAGMENT=latest-${GAMS_OS}-x86_64.pkg
+      FRAGMENT=$VERSION_MINICONDA-${GAMS_OS}-x86_64.pkg
       ;;
     Windows)
       PATH_ENDING = conda.exe
       CACHE_PATH="$GHA_PATH\\$PATH_ENDING"
       GAMS_OS=Windows
-      FRAGMENT=latest-${GAMS_OS}-x86_64.exe
+      FRAGMENT=$VERSION_MINICONDA-${GAMS_OS}-x86_64.exe
       ;;
   esac
 

@@ -20,6 +20,8 @@ runs:
     env:
       RUNNER_OS: ${{ runner.os }}
       INSTALLER: ${{ inputs.installer }}
+      VERSION_ANACONDA: ${{ inputs.version_anaconda }}
+      VERSION_MINICONDA: ${{ inputs.version_miniconda }}
       GHA_PATH: ${{ github.action_path }}
     run: ${GITHUB_ACTION_PATH}/script.sh
     shell: bash
