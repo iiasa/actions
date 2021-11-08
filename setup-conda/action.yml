@@ -1,0 +1,42 @@
+name: "Setup GAMS"
+description: "Install the GAMS executable."
+
+inputs:
+  license:
+    description: "Content for gamslice.txt, e.g. from a repo secret."
+    require: false
+    default: null
+  version:
+    description: "Version of GAMS to install"
+    required: false
+    default: "25.1.1"
+
+outputs:
+  cache-path:
+    description: "Path to the GAMS installer, e.g. for use with actions/cache."
+    value: ${{ steps.install.outputs.cache-path }}
+
+runs:
+  using: "composite"
+  steps:
+  - name: Install GAMS
+    id: install
+    env:
+      RUNNER_OS: ${{ runner.os }}
+      GAMS_VERSION: ${{ inputs.version }}
+      GHA_PATH: ${{ github.action_path }}
+    run: ${GITHUB_ACTION_PATH}/script.sh
+    shell: bash
+
+  - name: Set up GAMS license
+    env:
+      GAMS_LICENSE: ${{ inputs.license }}
+    run: |
+      if [ -n "$GAMS_LICENSE" ]; then
+        echo "$GAMS_LICENSE" > $(dirname $(which gams))/gamslice.txt
+      fi
+    shell: bash
+
+  - name: Confirm GAMS is on PATH & license is recognized
+    run: gams
+    shell: bash
