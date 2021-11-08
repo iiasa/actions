@@ -16,6 +16,7 @@ jobs:
         conda: [Anaconda, Miniconda]
 
     runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }}-${{ matrix.conda }}
 
     steps:  
     - name: Setup conda
