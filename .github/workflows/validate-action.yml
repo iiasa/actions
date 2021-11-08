@@ -1,0 +1,32 @@
+# Verify that the setup-conda action works
+
+name: Validate setup-conda action
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  # Name of the test environment to create
+  CONDA_ENV: testenv
+
+jobs:
+  conda:
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        conda: [Anaconda, Miniconda]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:  
+    - name: Setup conda
+    - uses: iiasa/actions/setup-conda@main
+      with:
+        conda_type: ${{ matrix.conda }}
+        
+    - name: Check conda version
+      run: conda --version
+
