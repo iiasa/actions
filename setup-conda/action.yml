@@ -1,42 +1,29 @@
-name: "Setup GAMS"
-description: "Install the GAMS executable."
+name: "Setup conda"
+description: "Install conda Miniconda or Anaconda."
 
 inputs:
-  license:
-    description: "Content for gamslice.txt, e.g. from a repo secret."
-    require: false
-    default: null
-  version:
-    description: "Version of GAMS to install"
-    required: false
-    default: "25.1.1"
+  conda_type:
+    description: "Version of conda to install"
+    required: true
+    default: "Anaconda"
 
 outputs:
   cache-path:
-    description: "Path to the GAMS installer, e.g. for use with actions/cache."
+    description: "Path to the conda installer, e.g. for use with actions/cache."
     value: ${{ steps.install.outputs.cache-path }}
 
 runs:
   using: "composite"
   steps:
-  - name: Install GAMS
+  - name: Install conda
     id: install
     env:
       RUNNER_OS: ${{ runner.os }}
-      GAMS_VERSION: ${{ inputs.version }}
+      CONDA_TYPE: ${{ inputs.version }}
       GHA_PATH: ${{ github.action_path }}
     run: ${GITHUB_ACTION_PATH}/script.sh
     shell: bash
 
-  - name: Set up GAMS license
-    env:
-      GAMS_LICENSE: ${{ inputs.license }}
-    run: |
-      if [ -n "$GAMS_LICENSE" ]; then
-        echo "$GAMS_LICENSE" > $(dirname $(which gams))/gamslice.txt
-      fi
-    shell: bash
-
-  - name: Confirm GAMS is on PATH & license is recognized
-    run: gams
+  - name: Confirm conda is on PATH
+    run: conda
     shell: bash
