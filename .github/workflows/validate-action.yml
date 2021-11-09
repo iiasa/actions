@@ -20,7 +20,7 @@ jobs:
 
     steps:  
     - name: Setup conda
-    - uses: iiasa/actions/setup-conda@main
+      uses: iiasa/actions/setup-conda@main
       with:
         conda_type: ${{ matrix.conda }}
         
