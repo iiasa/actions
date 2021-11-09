@@ -86,7 +86,7 @@ EOF
   pwsh install-conda.ps1
 else
   # Extract files
-  installer -pkg $FRAGMENT -target $env:GITHUB_PATH
+  installer -pkg $FRAGMENT -target "${env:GHA_PATH}/${INSTALLER_TYPE}3"
   echo >> "${env:GHA_PATH}/${INSTALLER_TYPE}3/Scripts" $GITHUB_PATH
 fi
 
