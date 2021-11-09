@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
-        conda: [Anaconda, Miniconda]
+        conda: [anaconda, miniconda]
 
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }}-${{ matrix.conda }}
