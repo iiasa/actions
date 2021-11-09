@@ -6,6 +6,14 @@ inputs:
     description: "Version of conda to install"
     required: true
     default: "Anaconda"
+  version_anaconda:
+    description: "Version of Anaconda to install"
+    required: false
+    default: "2021.05"
+  version_miniconda:
+    description: "Version of Miniconda to install"
+    required: false
+    default: "latest"
 
 outputs:
   cache-path:
