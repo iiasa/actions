@@ -3,17 +3,13 @@ description: "Install conda Miniconda or Anaconda."
 
 inputs:
   installer:
-    description: "Version of conda to install"
+    description: "Version of installer to install"
     required: true
     default: "Anaconda"
   version_anaconda:
-    description: "Version of Anaconda to install"
-    required: false
+    description: "Version of conda to install"
+    required: true
     default: "2021.05"
-  version_miniconda:
-    description: "Version of Miniconda to install"
-    required: false
-    default: "latest"
 
 outputs:
   cache-path:
@@ -28,8 +24,7 @@ runs:
     env:
       RUNNER_OS: ${{ runner.os }}
       INSTALLER: ${{ inputs.installer }}
-      VERSION_ANACONDA: ${{ inputs.version_anaconda }}
-      VERSION_MINICONDA: ${{ inputs.version_miniconda }}
+      VERSION: ${{ inputs.version_anaconda }}
       GHA_PATH: ${{ github.action_path }}
     run: ${GITHUB_ACTION_PATH}/script.sh
     shell: bash
