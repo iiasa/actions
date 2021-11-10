@@ -6,7 +6,7 @@ inputs:
     description: "Version of installer to install"
     required: true
     default: "Anaconda"
-  version_anaconda:
+  version:
     description: "Version of conda to install"
     required: true
     default: "2021.05"
@@ -24,7 +24,7 @@ runs:
     env:
       RUNNER_OS: ${{ runner.os }}
       INSTALLER: ${{ inputs.installer }}
-      VERSION: ${{ inputs.version_anaconda }}
+      VERSION: ${{ inputs.version }}
       GHA_PATH: ${{ github.action_path }}
     run: ${GITHUB_ACTION_PATH}/script.sh
     shell: bash

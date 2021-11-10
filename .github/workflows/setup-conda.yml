@@ -20,17 +20,17 @@ jobs:
 
     steps:  
     - name: Setup anaconda
-      if: ${{ matrix.conda_type == 'anaconda' }}
+      if: ${{ matrix.conda == 'anaconda' }}
       # Todo change branch back to `main`
-      uses: iiasa/action/setup-conda@feature/setup-conda-action
+      uses: iiasa/actions/setup-conda@feature/setup-conda-action
       with:
         installer: ${{ matrix.conda }}
         version: 2021.05
 
     - name: Setup miniconda
-      if: ${{ matrix.conda_type == 'miniconda' }}
+      if: ${{ matrix.conda == 'miniconda' }}
       # Todo change branch back to `main`
-      uses: iiasa/action/setup-conda@feature/setup-conda-action
+      uses: iiasa/actions/setup-conda@feature/setup-conda-action
       with:
         installer: ${{ matrix.conda }}
         version: py39_14.10.3
