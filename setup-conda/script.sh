@@ -54,17 +54,15 @@ echo "::set-output name=cache-path::$CACHE_PATH"
 BASE_URL=https://repo.anaconda.com
 URL=$BASE_URL/$URL_FRAGMENT/$INSTALL_FILE
 
-# Debug
-echo "$URL"
-
 # curl --time-cond only works if the named file exists
-if [ -x "conda.${EXT}" ]; then
+if [ -x "conda.$EXT" ]; then
   # Don't retrieve if the remote file is older than the cached one
-  TIME_CONDITION=--remote-time --time-cond "conda.${EXT}"
+  TIME_CONDITION=--remote-time --time-cond "conda.$EXT"
 fi
 
 # Download file/application
-curl --silent $URL --output "conda.${EXT}" $TIME_CONDITION
+echo "Download from: $URL"
+curl --silent $URL --output "conda.$EXT" $TIME_CONDITION
 
 # Install
 case $RUNNER_OS in
@@ -73,18 +71,18 @@ case $RUNNER_OS in
     # -b run install in batch mode (without manual intervention):
     #  Accepts the Licence Agreement and allows Anaconda to be added to the `PATH`.
     # -p PREFIX install prefix, defaults to $PREFIX, must not contain spaces. Default PREFIX=$HOME/anaconda3
-    bash $INSTALL_FILE -b -p "$GITHUB_ACTION_PATH/$DEST"
+    conda.$EXT -b -p "$GITHUB_ACTION_PATH/$DEST"
     # Load the  `PATH` environment variable in current terminal session
     source ~/.bashrc
     ;;
   macOS)
     # Use the macOS "installer" program to run the .pkg
-    installer -pkg $INSTALL_FILE -target "$GITHUB_ACTION_PATH/$DEST"
+    installer -pkg "conda.$EXT" -target "$GITHUB_ACTION_PATH/$DEST"
     ;;
   Windows)
     # Write a PowerShell script. Install to the same directory as *nix
     cat << EOF >install-conda.ps1
-Start-Process "$INSTALL_FILE" "/SP-", "/SILENT", "/DIR=$GHA_PATH\\$DEST", "/NORESTART" -Wait
+Start-Process conda.$EXT "/SP-", "/SILENT", "/DIR=$GHA_PATH\\$DEST", "/NORESTART" -Wait
 EOF
     cat install-conda.ps1
 
