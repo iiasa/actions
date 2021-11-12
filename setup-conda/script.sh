@@ -66,31 +66,32 @@ fi
 # Download file/application
 curl --silent $URL --output "conda.${EXT}" $TIME_CONDITION
 
-if [ $CONDA_OS == "windows-latest" ]; then
-  # Write a PowerShell script. Install to the same directory as *nix
-  cat << EOF >install-conda.ps1
+# Install
+case $RUNNER_OS in
+  Linux)
+    # Extract files
+    # -b run install in batch mode (without manual intervention):
+    #  Accepts the Licence Agreement and allows Anaconda to be added to the `PATH`.
+    # -p PREFIX install prefix, defaults to $PREFIX, must not contain spaces. Default PREFIX=$HOME/anaconda3
+    bash $INSTALL_FILE -b -p "$GITHUB_ACTION_PATH/$DEST"
+    # Load the  `PATH` environment variable in current terminal session
+    source ~/.bashrc
+    ;;
+  macOS)
+    # Use the macOS "installer" program to run the .pkg
+    installer -pkg $INSTALL_FILE -target "$GITHUB_ACTION_PATH/$DEST"
+    ;;
+  Windows)
+    # Write a PowerShell script. Install to the same directory as *nix
+    cat << EOF >install-conda.ps1
 Start-Process "$INSTALL_FILE" "/SP-", "/SILENT", "/DIR=$GHA_PATH\\$DEST", "/NORESTART" -Wait
 EOF
-  cat install-conda.ps1
+    cat install-conda.ps1
 
-  # Invoke the script
-  pwsh install-conda.ps1
-fi
-
-if [ $CONDA_OS == "macos-latest" ]; then
-  # Extract files
-  installer -pkg $INSTALL_FILE -target "$GITHUB_ACTION_PATH/$DEST"
-fi
-
-if [ $CONDA_OS == "ubuntu-latest" ]; then
-  # Extract files
-  # -b run install in batch mode (without manual intervention):
-  #  Accepts the Licence Agreement and allows Anaconda to be added to the `PATH`.
-  # -p PREFIX install prefix, defaults to $PREFIX, must not contain spaces. Default PREFIX=$HOME/anaconda3
-  bash $INSTALL_FILE -b -p "$GITHUB_ACTION_PATH/$DEST"
-  # Load the  `PATH` environment variable in current terminal session
-  source ~/.bashrc
-fi
+    # Invoke the script
+    pwsh install-conda.ps1
+    ;;
+esac
 
 # Return to the last directory
 popd
