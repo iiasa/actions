@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Change to the direction containing the action's code
+# Change to the directory containing the action's code
 pushd $GITHUB_ACTION_PATH
 
 # Create a temporary directory
