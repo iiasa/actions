@@ -18,7 +18,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }}-${{ matrix.conda }}
 
-    steps:  
+    steps:
     - name: Setup anaconda
       if: ${{ matrix.conda == 'anaconda' }}
       # Todo change branch back to `main`
@@ -35,6 +35,5 @@ jobs:
         installer: ${{ matrix.conda }}
         version: py39_14.10.3
 
-    - name: Check conda version
-      run: conda --version
-
+    - name: Check conda version and location
+      run: conda info
