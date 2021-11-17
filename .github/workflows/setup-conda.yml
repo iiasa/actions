@@ -1,12 +1,12 @@
 # Verify that the setup-conda action works
 
 name: Validate setup-conda action
-
+# Todo change branch back to `main`
 on:
   push:
-    branches: [ main ]
+    branches: [ feature/setup-conda-action ]
   pull_request:
-    branches: [ main ]
+    branches: [ feature/setup-conda-action ]
 
 jobs:
   conda:
@@ -23,7 +23,7 @@ jobs:
     - name: Setup anaconda
       if: ${{ matrix.conda == 'anaconda' }}
       # Todo change branch back to `main`
-      uses: iiasa/actions/setup-conda@feature/main
+      uses: iiasa/actions/setup-conda@feature/setup-conda-action
       with:
         installer: ${{ matrix.conda }}
         version: 2021.05
@@ -31,7 +31,7 @@ jobs:
     - name: Setup miniconda
       if: ${{ matrix.conda == 'miniconda' }}
       # Todo change branch back to `main`
-      uses: iiasa/actions/setup-conda@feature/main
+      uses: iiasa/actions/setup-conda@feature/setup-conda-action
       with:
         installer: ${{ matrix.conda }}
         version: py39_4.10.3
