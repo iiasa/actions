@@ -1,41 +1,41 @@
 #!/bin/bash
 
 # Change to the directory containing the action's code
-pushd $GITHUB_ACTION_PATH
+pushd "$GITHUB_ACTION_PATH" || exit
 
 # # Create a temporary directory
-# mkdir -p conda
+mkdir -p conda
 # BASE=$(realpath conda)
 
 anaconda="anaconda"
 miniconda="miniconda"
 
 # Conda installer type and source URL fragment
-if [ $INSTALLER == $anaconda ]; then
+if [ "$INSTALLER" == $anaconda ]; then
   INSTALLER_TYPE='Anaconda'
   URL_FRAGMENT='archive'
 fi
 
-if [ $INSTALLER == $miniconda ]; then
+if [ "$INSTALLER" == $miniconda ]; then
   INSTALLER_TYPE='Miniconda'
   URL_FRAGMENT=$INSTALLER
 fi
 
 case $RUNNER_OS in
   Linux)
-    EXT=sh
+    EXT="sh"
     CACHE_PATH="$GITHUB_ACTION_PATH/conda.$EXT"
-    CONDA_OS=Linux
+    CONDA_OS="Linux"
     ;;
   macOS)
-    EXT=pkg
+    EXT="pkg"
     CACHE_PATH="$GITHUB_ACTION_PATH/conda.$EXT"
-    CONDA_OS=MacOSX
+    CONDA_OS="MacOSX"
     ;;
   Windows)
-    EXT=exe
+    EXT="exe"
     CACHE_PATH="$GHA_PATH\\conda.$EXT"
-    CONDA_OS=Windows
+    CONDA_OS="Windows"
     ;;
 esac
 
@@ -47,7 +47,7 @@ DEST="${INSTALLER_TYPE}3"
 
 # Write to special GitHub Actions environment variable to update $PATH for
 # subsequent workflow steps
-echo "$GITHUB_ACTION_PATH/$DEST/Scripts" >> $GITHUB_PATH
+echo "$GITHUB_ACTION_PATH/$DEST/Scripts" >> "$GITHUB_PATH"
 echo "::set-output name=cache-path::$CACHE_PATH"
 
 ls -l
@@ -59,12 +59,13 @@ URL=$BASE_URL/$URL_FRAGMENT/$INSTALL_FILE
 # curl --time-cond only works if the named file exists
 if [ -x "conda.$EXT" ]; then
   # Don't retrieve if the remote file is older than the cached one
+  # shellcheck disable=SC2037
   TIME_CONDITION=--remote-time --time-cond "conda.$EXT"
 fi
 
 # Download file/application
 echo "Download from: $URL"
-curl --silent $URL --output "conda.$EXT" $TIME_CONDITION
+curl --silent "$URL" --output "conda.$EXT" $TIME_CONDITION
 
 # Install
 case $RUNNER_OS in
@@ -74,8 +75,6 @@ case $RUNNER_OS in
     #  Accepts the Licence Agreement and allows Anaconda to be added to the `PATH`.
     # -p PREFIX install prefix, defaults to $PREFIX, must not contain spaces. Default PREFIX=$HOME/anaconda3
     bash "conda.$EXT" -b -p "$GITHUB_ACTION_PATH/$DEST"
-    # Load the  `PATH` environment variable in current terminal session
-    source ~/.bashrc
     ;;
   macOS)
     # Use the macOS "installer" program to run the .pkg
@@ -94,4 +93,4 @@ EOF
 esac
 
 # Return to the last directory
-popd
+popd || exit
