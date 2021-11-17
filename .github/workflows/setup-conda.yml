@@ -26,7 +26,7 @@ jobs:
       uses: iiasa/actions/setup-conda@feature/setup-conda-action
       with:
         installer: ${{ matrix.conda }}
-        version: 2021.05
+        version: 2019.03
 
     - name: Setup miniconda
       if: ${{ matrix.conda == 'miniconda' }}
@@ -34,7 +34,7 @@ jobs:
       uses: iiasa/actions/setup-conda@feature/setup-conda-action
       with:
         installer: ${{ matrix.conda }}
-        version: py39_4.10.3
+        version: py39_4.9.2
 
     - name: Check conda version and location
       run: conda info
