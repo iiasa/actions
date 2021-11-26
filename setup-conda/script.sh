@@ -13,11 +13,11 @@ miniconda="miniconda"
 # Conda installer type and source URL fragment
 case $INSTALLER in
   anaconda)
-    INSTALLER_TYPE="Anaconda"
+    INSTALLER_TYPE="Anaconda3"
     URL_FRAGMENT="archive"
     ;;
   miniconda)
-    INSTALLER_TYPE="Miniconda"
+    INSTALLER_TYPE="Miniconda3"
     URL_FRAGMENT=$INSTALLER
     ;;
 esac
@@ -44,14 +44,11 @@ case $RUNNER_OS in
 esac
 
 # Name of the file/application to install
-INSTALL_FILE=${INSTALLER_TYPE}3-${VERSION}-${CONDA_OS}-x86_64.${EXT}
-
-# Path fragment for extraction or install
-DEST="${INSTALLER_TYPE}3"
+INSTALL_FILE=${INSTALLER_TYPE}-${VERSION}-${CONDA_OS}-x86_64.${EXT}
 
 # Write to special GitHub Actions environment variable to update $PATH for
 # subsequent workflow steps
-echo "$GITHUB_ACTION_PATH/$DEST/$BINDIR" >> "$GITHUB_PATH"
+echo "$GITHUB_ACTION_PATH/$INSTALLER_TYPE/$BINDIR" >> "$GITHUB_PATH"
 echo "::set-output name=cache-path::$CACHE_PATH"
 
 # Retrieve
@@ -76,12 +73,12 @@ case $RUNNER_OS in
     # -b run install in batch mode (without manual intervention):
     #  Accepts the Licence Agreement and allows Anaconda to be added to the `PATH`.
     # -p PREFIX install prefix, defaults to $PREFIX, must not contain spaces. Default PREFIX=$HOME/anaconda3
-    bash "conda.$EXT" -b -p "$GITHUB_ACTION_PATH/$DEST"
+    bash "conda.$EXT" -b -p "$GITHUB_ACTION_PATH/$INSTALLER_TYPE"
     ;;
   Windows)
     # Convert any "/" in $GHA_PATH to "\". This occurs if the action is checked
     # out from a branch/ref whose name contains "/".
-    DEST_ARG=$(echo "$GHA_PATH\\$DEST" | tr "/" "\\\\")
+    DEST_ARG=$(echo "$GHA_PATH\\$INSTALLER_TYPE" | tr "/" "\\\\")
     # Write a PowerShell script. Install to the same directory as *nix
     cat << EOF >install-conda.ps1
 Start-Process "conda.$EXT" "/S", "/D=$DEST_ARG" -Wait
