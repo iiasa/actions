@@ -1,13 +1,9 @@
 # Verify that the setup-conda action works
-#
-# When modifying the action in a PR, set the "uses:" entries to "…@branch-name"
-# to test the modified code on the branch.
 
 name: Validate setup-conda action
 on:
   push:
-    # TODO remove feature/setup-conda-action once #2 is merged
-    branches: [ main, feature/setup-conda-action ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -35,17 +31,19 @@ jobs:
     name: ${{ matrix.os }}-${{ matrix.conda }}
 
     steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+
     - name: Setup anaconda (defaults)
       if: matrix.conda == 'anaconda'
-      uses: iiasa/actions/setup-conda@feature/setup-conda-action
+      uses: ./setup-conda
       with:
         # NB no "installer:" key → test that default is used
         version: ${{ matrix.anaconda-version}}
 
-
     - name: Setup miniconda (py39_4.10.3)
       if: matrix.conda == 'miniconda'
-      uses: iiasa/actions/setup-conda@feature/setup-conda-action
+      uses: ./setup-conda
       with:
         installer: ${{ matrix.conda }}
         version: py39_4.10.3
