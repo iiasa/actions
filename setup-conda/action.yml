@@ -1,15 +1,15 @@
 name: "Setup conda"
-description: "Install conda Miniconda or Anaconda."
+description: "Install Anaconda or Miniconda"
 
 inputs:
   installer:
-    description: "Version of installer to install"
+    description: "Installer to use"
     required: true
     default: "Anaconda"
   version:
-    description: "Version of conda to install"
+    description: "Version of installer to use"
     required: true
-    default: "2021.05"
+    default: "2021.11"
 
 outputs:
   cache-path:
@@ -17,7 +17,7 @@ outputs:
     value: ${{ steps.install.outputs.cache-path }}
 
 runs:
-  using: "composite"
+  using: composite
   steps:
   - name: Install conda
     id: install

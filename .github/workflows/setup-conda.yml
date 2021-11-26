@@ -6,7 +6,7 @@
 name: Validate setup-conda action
 on:
   push:
-    # TODO remove feature/setup-conda-action once #2 is merge
+    # TODO remove feature/setup-conda-action once #2 is merged
     branches: [ main, feature/setup-conda-action ]
   pull_request:
     branches: [ main ]
@@ -26,6 +26,7 @@ jobs:
     - name: Setup anaconda (defaults)
       if: ${{ matrix.conda == 'anaconda' }}
       uses: iiasa/actions/setup-conda@feature/setup-conda-action
+      # NB no "with:" section → defaults are used
 
     - name: Setup miniconda (py39_4.10.3)
       if: ${{ matrix.conda == 'miniconda' }}
