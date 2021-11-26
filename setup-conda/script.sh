@@ -27,16 +27,19 @@ case $RUNNER_OS in
     EXT="sh"
     CACHE_PATH="$GITHUB_ACTION_PATH/conda.$EXT"
     CONDA_OS="Linux"
+    BINDIR="bin"
     ;;
   macOS)
     EXT="sh"
     CACHE_PATH="$GITHUB_ACTION_PATH/conda.$EXT"
     CONDA_OS="MacOSX"
+    BINDIR="bin"
     ;;
   Windows)
     EXT="exe"
     CACHE_PATH="$GHA_PATH\\conda.$EXT"
     CONDA_OS="Windows"
+    BINDIR="Scripts"
     ;;
 esac
 
@@ -48,7 +51,7 @@ DEST="${INSTALLER_TYPE}3"
 
 # Write to special GitHub Actions environment variable to update $PATH for
 # subsequent workflow steps
-echo "$GITHUB_ACTION_PATH/$DEST/Scripts" >> "$GITHUB_PATH"
+echo "$GITHUB_ACTION_PATH/$DEST/$BINDIR" >> "$GITHUB_PATH"
 echo "::set-output name=cache-path::$CACHE_PATH"
 
 # Retrieve
