@@ -79,9 +79,12 @@ case $RUNNER_OS in
     bash "conda.$EXT" -b -p "$GITHUB_ACTION_PATH/$DEST"
     ;;
   Windows)
+    # Convert any "/" in $GHA_PATH to "\". This occurs if the action is checked
+    # out from a branch/ref whose name contains "/".
+    DEST_ARG=$(echo "$GHA_PATH\\$DEST" | tr "/" "\\\\")
     # Write a PowerShell script. Install to the same directory as *nix
     cat << EOF >install-conda.ps1
-Start-Process "conda.$EXT" "/S", "/D=$GHA_PATH\\$DEST" -Wait
+Start-Process "conda.$EXT" "/S", "/D=$DEST_ARG" -Wait
 EOF
     cat install-conda.ps1
 
