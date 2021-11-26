@@ -3,13 +3,6 @@
 # Change to the directory containing the action's code
 pushd "$GITHUB_ACTION_PATH" || exit
 
-# # Create a temporary directory
-mkdir -p conda
-# BASE=$(realpath conda)
-
-anaconda="anaconda"
-miniconda="miniconda"
-
 # Conda installer type and source URL fragment
 case $INSTALLER in
   anaconda)
