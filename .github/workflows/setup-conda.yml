@@ -17,6 +17,18 @@ jobs:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
         conda: [anaconda, miniconda]
+        anaconda-version: ["2021.11"]
+
+        # Replace the window-latest-anaconda job with a different version
+        exclude:
+        - os: windows-latest
+          conda: anaconda
+          anaconda-version: "2021.11"
+        include:
+        - os: windows-latest
+          conda: anaconda
+          anaconda-version: "2019.03"
+
       fail-fast: false
 
     runs-on: ${{ matrix.os }}
@@ -24,12 +36,15 @@ jobs:
 
     steps:
     - name: Setup anaconda (defaults)
-      if: ${{ matrix.conda == 'anaconda' }}
+      if: matrix.conda == 'anaconda'
       uses: iiasa/actions/setup-conda@feature/setup-conda-action
-      # NB no "with:" section → defaults are used
+      with:
+        # NB no "installer:" key → test that default is used
+        version: ${{ matrix.anaconda-version}}
+
 
     - name: Setup miniconda (py39_4.10.3)
-      if: ${{ matrix.conda == 'miniconda' }}
+      if: matrix.conda == 'miniconda'
       uses: iiasa/actions/setup-conda@feature/setup-conda-action
       with:
         installer: ${{ matrix.conda }}
