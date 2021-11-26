@@ -1,9 +1,21 @@
 #!/bin/bash
+#
+# Expected environment variables from action.yml:
+# - INSTALLER, VERSION: user inputs
+# - GHA_PATH: this is the same as GITHUB_ACTION_PATH, below, except on Windows
+#   it uses the Windows path separator ("\")
+#
+# Defined by GitHub Actions:
+# - GITHUB_ACTION_PATH: path in which the action is checked out/run. Uses "/"
+#   as a path separator on all OS, even Windows.
+# - RUNNER_OS
 
 # Change to the directory containing the action's code
 pushd "$GITHUB_ACTION_PATH" || exit
 
-# Conda installer type and source URL fragment
+# Set options based on the installer:
+# - INSTALLER_TYPE used in the download URL *and* installation path
+# - a URL_FRAGMENT used in the download URL
 case $INSTALLER in
   anaconda)
     INSTALLER_TYPE="Anaconda3"
@@ -11,77 +23,67 @@ case $INSTALLER in
     ;;
   miniconda)
     INSTALLER_TYPE="Miniconda3"
-    URL_FRAGMENT=$INSTALLER
+    URL_FRAGMENT="miniconda"
     ;;
 esac
 
+# Set options based on the OS:
+# - EXT: file extension for the installer
+# - DEST: installation path
+# - BINDIR: directory under DEST containg executables
 case $RUNNER_OS in
-  Linux)
+  Linux|macOS)
     EXT="sh"
-    CACHE_PATH="$GITHUB_ACTION_PATH/conda.$EXT"
-    CONDA_OS="Linux"
-    BINDIR="bin"
-    ;;
-  macOS)
-    EXT="sh"
-    CACHE_PATH="$GITHUB_ACTION_PATH/conda.$EXT"
-    CONDA_OS="MacOSX"
+    DEST="$GITHUB_ACTION_PATH/$INSTALLER_TYPE"
     BINDIR="bin"
     ;;
   Windows)
     EXT="exe"
-    CACHE_PATH="$GHA_PATH\\conda.$EXT"
-    CONDA_OS="Windows"
+    # Convert any "/" in $GHA_PATH to "\". This occurs if the action is checked
+    # out from a branch/ref whose name contains "/".
+    DEST=$(echo "$GHA_PATH\\$INSTALLER_TYPE" | tr "/" "\\\\")
     BINDIR="Scripts"
     ;;
 esac
 
-# Name of the file/application to install
-INSTALL_FILE=${INSTALLER_TYPE}-${VERSION}-${CONDA_OS}-x86_64.${EXT}
+# Set OS, used to construct the URL
+OS=$(echo "$RUNNER_OS" | sed "s/macOS/MacOSX/" -)
 
-# Write to special GitHub Actions environment variable to update $PATH for
-# subsequent workflow steps
-echo "$GITHUB_ACTION_PATH/$INSTALLER_TYPE/$BINDIR" >> "$GITHUB_PATH"
-echo "::set-output name=cache-path::$CACHE_PATH"
-
-# Retrieve
-URL=https://repo.anaconda.com/$URL_FRAGMENT/$INSTALL_FILE
+# URL for installer
+URL="https://repo.anaconda.com/$URL_FRAGMENT/${INSTALLER_TYPE}-${VERSION}-${OS}-x86_64.${EXT}"
 
 # curl --time-cond only works if the named file exists
 if [ -x "conda.$EXT" ]; then
   # Don't retrieve if the remote file is older than the cached one
-  # shellcheck disable=SC2037
   TIME_CONDITION=--remote-time --time-cond "conda.$EXT"
 fi
 
-# Download file/application
+# Download installer
 echo "Download from: $URL"
 curl --silent "$URL" --output "conda.$EXT" $TIME_CONDITION
 
-# Install
+# Run the installer
+# - Run in batch/silent mode ("-b" on *nix, "/S" on Windows), accept the licence
+#   agreement, etc.
+# - Set the installation path ("-p" on *nix, "/D" on Windows).
 case $RUNNER_OS in
   Linux|macOS)
-    # Run the installer script
-    #
-    # -b run install in batch mode (without manual intervention):
-    #  Accepts the Licence Agreement and allows Anaconda to be added to the `PATH`.
-    # -p PREFIX install prefix, defaults to $PREFIX, must not contain spaces. Default PREFIX=$HOME/anaconda3
-    bash "conda.$EXT" -b -p "$GITHUB_ACTION_PATH/$INSTALLER_TYPE"
+    bash "conda.$EXT" -b -p "$DEST"
     ;;
   Windows)
-    # Convert any "/" in $GHA_PATH to "\". This occurs if the action is checked
-    # out from a branch/ref whose name contains "/".
-    DEST_ARG=$(echo "$GHA_PATH\\$INSTALLER_TYPE" | tr "/" "\\\\")
-    # Write a PowerShell script. Install to the same directory as *nix
+    # Write a PowerShell script, then invoke it
     cat << EOF >install-conda.ps1
-Start-Process "conda.$EXT" "/S", "/D=$DEST_ARG" -Wait
+Start-Process "conda.$EXT" "/S", "/D=$DEST" -Wait
 EOF
     cat install-conda.ps1
-
-    # Invoke the script
     pwsh install-conda.ps1
     ;;
 esac
+
+# Write to GitHub Actions environment variable to update $PATH for subsequent
+# workflow steps. Note that this uses GITHUB_ACTION_PATH ("/" separated) even on
+# Windows, because this is what GHA expects.
+echo "$GITHUB_ACTION_PATH/$INSTALLER_TYPE/$BINDIR" >> "$GITHUB_PATH"
 
 # Return to the last directory
 popd || exit

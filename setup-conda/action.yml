@@ -22,7 +22,6 @@ runs:
   - name: Install conda
     id: install
     env:
-      RUNNER_OS: ${{ runner.os }}
       INSTALLER: ${{ inputs.installer }}
       VERSION: ${{ inputs.version }}
       GHA_PATH: ${{ github.action_path }}
