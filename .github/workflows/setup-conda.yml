@@ -1,12 +1,15 @@
 # Verify that the setup-conda action works
+#
+# When modifying the action in a PR, set the "uses:" entries to "…@branch-name"
+# to test the modified code on the branch.
 
 name: Validate setup-conda action
-# Todo change branch back to `main`
 on:
   push:
-    branches: [ feature/setup-conda-action ]
+    # TODO remove feature/setup-conda-action once #2 is merge
+    branches: [ main, feature/setup-conda-action ]
   pull_request:
-    branches: [ feature/setup-conda-action ]
+    branches: [ main ]
 
 jobs:
   conda:
@@ -22,7 +25,6 @@ jobs:
     steps:
     - name: Setup anaconda
       if: ${{ matrix.conda == 'anaconda' }}
-      # Todo change branch back to `main`
       uses: iiasa/actions/setup-conda@feature/setup-conda-action
       with:
         installer: ${{ matrix.conda }}
@@ -30,7 +32,6 @@ jobs:
 
     - name: Setup miniconda
       if: ${{ matrix.conda == 'miniconda' }}
-      # Todo change branch back to `main`
       uses: iiasa/actions/setup-conda@feature/setup-conda-action
       with:
         installer: ${{ matrix.conda }}
