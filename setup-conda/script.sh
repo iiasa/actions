@@ -11,15 +11,16 @@ anaconda="anaconda"
 miniconda="miniconda"
 
 # Conda installer type and source URL fragment
-if [ "$INSTALLER" == $anaconda ]; then
-  INSTALLER_TYPE='Anaconda'
-  URL_FRAGMENT='archive'
-fi
-
-if [ "$INSTALLER" == $miniconda ]; then
-  INSTALLER_TYPE='Miniconda'
-  URL_FRAGMENT=$INSTALLER
-fi
+case $INSTALLER in
+  anaconda)
+    INSTALLER_TYPE="Anaconda"
+    URL_FRAGMENT="archive"
+    ;;
+  miniconda)
+    INSTALLER_TYPE="Miniconda"
+    URL_FRAGMENT=$INSTALLER
+    ;;
+esac
 
 case $RUNNER_OS in
   Linux)
@@ -28,7 +29,7 @@ case $RUNNER_OS in
     CONDA_OS="Linux"
     ;;
   macOS)
-    EXT="pkg"
+    EXT="sh"
     CACHE_PATH="$GITHUB_ACTION_PATH/conda.$EXT"
     CONDA_OS="MacOSX"
     ;;
@@ -50,11 +51,8 @@ DEST="${INSTALLER_TYPE}3"
 echo "$GITHUB_ACTION_PATH/$DEST/Scripts" >> "$GITHUB_PATH"
 echo "::set-output name=cache-path::$CACHE_PATH"
 
-ls -l
-
 # Retrieve
-BASE_URL=https://repo.anaconda.com
-URL=$BASE_URL/$URL_FRAGMENT/$INSTALL_FILE
+URL=https://repo.anaconda.com/$URL_FRAGMENT/$INSTALL_FILE
 
 # curl --time-cond only works if the named file exists
 if [ -x "conda.$EXT" ]; then
@@ -69,16 +67,13 @@ curl --silent "$URL" --output "conda.$EXT" $TIME_CONDITION
 
 # Install
 case $RUNNER_OS in
-  Linux)
-    # Extract files
+  Linux|macOS)
+    # Run the installer script
+    #
     # -b run install in batch mode (without manual intervention):
     #  Accepts the Licence Agreement and allows Anaconda to be added to the `PATH`.
     # -p PREFIX install prefix, defaults to $PREFIX, must not contain spaces. Default PREFIX=$HOME/anaconda3
     bash "conda.$EXT" -b -p "$GITHUB_ACTION_PATH/$DEST"
-    ;;
-  macOS)
-    # Use the macOS "installer" program to run the .pkg
-    installer -pkg "conda.$EXT" -target "$GITHUB_ACTION_PATH/$DEST"
     ;;
   Windows)
     # Write a PowerShell script. Install to the same directory as *nix
