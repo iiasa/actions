@@ -5,7 +5,7 @@ inputs:
   installer:
     description: "Installer to use"
     required: true
-    default: "Anaconda"
+    default: "anaconda"
   version:
     description: "Version of installer to use"
     required: true

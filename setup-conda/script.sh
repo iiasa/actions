@@ -25,6 +25,9 @@ case $INSTALLER in
     INSTALLER_TYPE="Miniconda3"
     URL_FRAGMENT="miniconda"
     ;;
+  *)
+    echo "::error::'installer:' must be one of (anaconda, miniconda); got '$INSTALLER'"
+    exit 1
 esac
 
 # Set options based on the OS:
