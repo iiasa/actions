@@ -23,19 +23,16 @@ jobs:
     name: ${{ matrix.os }}-${{ matrix.conda }}
 
     steps:
-    - name: Setup anaconda
+    - name: Setup anaconda (defaults)
       if: ${{ matrix.conda == 'anaconda' }}
       uses: iiasa/actions/setup-conda@feature/setup-conda-action
-      with:
-        installer: ${{ matrix.conda }}
-        version: 2019.03
 
-    - name: Setup miniconda
+    - name: Setup miniconda (py39_4.10.3)
       if: ${{ matrix.conda == 'miniconda' }}
       uses: iiasa/actions/setup-conda@feature/setup-conda-action
       with:
         installer: ${{ matrix.conda }}
-        version: py39_4.9.2
+        version: py39_4.10.3
 
     - name: Check conda version and location
       run: conda info
