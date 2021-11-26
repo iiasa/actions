@@ -1,0 +1,32 @@
+name: "Setup conda"
+description: "Install Anaconda or Miniconda"
+
+inputs:
+  installer:
+    description: "Installer to use"
+    required: true
+    default: "anaconda"
+  version:
+    description: "Version of installer to use"
+    required: true
+    default: "2021.11"
+
+outputs:
+  cache-path:
+    description: "Path to the conda installer, e.g. for use with actions/cache."
+    value: ${{ steps.install.outputs.cache-path }}
+
+runs:
+  using: composite
+  steps:
+  - name: Install conda
+    id: install
+    env:
+      INSTALLER: ${{ inputs.installer }}
+      VERSION: ${{ inputs.version }}
+    run: ${GITHUB_ACTION_PATH}/script.sh
+    shell: bash
+
+  - name: Confirm installed conda is on PATH
+    run: conda info
+    shell: bash

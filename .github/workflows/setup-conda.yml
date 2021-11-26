@@ -1,0 +1,54 @@
+# Verify that the setup-conda action works
+#
+# When modifying the action in a PR, set the "uses:" entries to "…@branch-name"
+# to test the modified code on the branch.
+
+name: Validate setup-conda action
+on:
+  push:
+    # TODO remove feature/setup-conda-action once #2 is merged
+    branches: [ main, feature/setup-conda-action ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  conda:
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        conda: [anaconda, miniconda]
+        anaconda-version: ["2021.11"]
+
+        # Replace the window-latest-anaconda job with a different version
+        exclude:
+        - os: windows-latest
+          conda: anaconda
+          anaconda-version: "2021.11"
+        include:
+        - os: windows-latest
+          conda: anaconda
+          anaconda-version: "2019.03"
+
+      fail-fast: false
+
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }}-${{ matrix.conda }}
+
+    steps:
+    - name: Setup anaconda (defaults)
+      if: matrix.conda == 'anaconda'
+      uses: iiasa/actions/setup-conda@feature/setup-conda-action
+      with:
+        # NB no "installer:" key → test that default is used
+        version: ${{ matrix.anaconda-version}}
+
+
+    - name: Setup miniconda (py39_4.10.3)
+      if: matrix.conda == 'miniconda'
+      uses: iiasa/actions/setup-conda@feature/setup-conda-action
+      with:
+        installer: ${{ matrix.conda }}
+        version: py39_4.10.3
+
+    - name: Check conda version and location
+      run: conda info
