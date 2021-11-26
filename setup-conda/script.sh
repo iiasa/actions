@@ -81,7 +81,7 @@ case $RUNNER_OS in
   Windows)
     # Write a PowerShell script. Install to the same directory as *nix
     cat << EOF >install-conda.ps1
-Start-Process "conda.$EXT" "/SP-", "/SILENT", "/DIR=$GHA_PATH\\$DEST", "/NORESTART" -Wait
+Start-Process "conda.$EXT" "/S", "/D=$GHA_PATH\\$DEST" -Wait
 EOF
     cat install-conda.ps1
 
