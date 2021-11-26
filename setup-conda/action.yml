@@ -24,7 +24,6 @@ runs:
     env:
       INSTALLER: ${{ inputs.installer }}
       VERSION: ${{ inputs.version }}
-      GHA_PATH: ${{ github.action_path }}
     run: ${GITHUB_ACTION_PATH}/script.sh
     shell: bash
 

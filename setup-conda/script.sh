@@ -2,12 +2,9 @@
 #
 # Expected environment variables from action.yml:
 # - INSTALLER, VERSION: user inputs
-# - GHA_PATH: this is the same as GITHUB_ACTION_PATH, below, except on Windows
-#   it uses the Windows path separator ("\")
 #
 # Defined by GitHub Actions:
-# - GITHUB_ACTION_PATH: path in which the action is checked out/run. Uses "/"
-#   as a path separator on all OS, even Windows.
+# - GITHUB_ACTION_PATH: path in which the action is checked out/run
 # - RUNNER_OS
 
 # Change to the directory containing the action's code
@@ -30,27 +27,28 @@ case $INSTALLER in
     exit 1
 esac
 
+# Installation path
+DEST="$GITHUB_ACTION_PATH/$INSTALLER_TYPE"
+
 # Set options based on the OS:
 # - EXT: file extension for the installer
-# - DEST: installation path
 # - BINDIR: directory under DEST containg executables
 case $RUNNER_OS in
   Linux|macOS)
     EXT="sh"
-    DEST="$GITHUB_ACTION_PATH/$INSTALLER_TYPE"
     BINDIR="bin"
     ;;
   Windows)
     EXT="exe"
+    BINDIR="Scripts"
     # Convert any "/" in $GHA_PATH to "\". This occurs if the action is checked
     # out from a branch/ref whose name contains "/".
-    DEST=$(echo "$GHA_PATH\\$INSTALLER_TYPE" | tr "/" "\\\\")
-    BINDIR="Scripts"
+    DEST=$(echo "$DEST" | tr "/" "\\\\")
     ;;
 esac
 
 # Set OS, used to construct the URL
-OS=$(echo "$RUNNER_OS" | sed "s/macOS/MacOSX/" -)
+OS=$(echo "$RUNNER_OS" | sed "s/macOS/MacOSX/")
 
 # URL for installer
 URL="https://repo.anaconda.com/$URL_FRAGMENT/${INSTALLER_TYPE}-${VERSION}-${OS}-x86_64.${EXT}"
