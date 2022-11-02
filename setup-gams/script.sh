@@ -32,7 +32,9 @@ DEST=gams$(echo $GAMS_VERSION | cut -d. -f1-2)_$FRAGMENT
 # Write to special GitHub Actions environment variable to update $PATH for
 # subsequent workflow steps
 echo "$GITHUB_ACTION_PATH/$DEST" >> $GITHUB_PATH
-echo "::set-output name=cache-path::$CACHE_PATH"
+
+# Set the "steps.{id}.outputs.cache-patch" value for use with actions/cache
+echo "cache-path=$CACHE_PATH" >> $GITHUB_OUTPUT
 
 # Retrieve
 BASE_URL=https://d37drm4t2jghv5.cloudfront.net/distributions
