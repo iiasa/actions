@@ -8,7 +8,8 @@ on:
           Maximum McCabe complexity for the flake8 --max-complexity
           option.
         type: number
-        required: true
+        required: false
+        default: ""
       python-version:
         description: |-
            Python version for the workflow, passed to
@@ -49,7 +50,9 @@ jobs:
       run: black --check .
 
     - name: Lint with flake8
-      run: flake8 --count --max-complexity=${{ inputs.max-complexity }} --show-source --statistics
+      env:
+        MC: ${{ inputs.max-complexity }}
+      run: flake8 --count --show-source --statistics $([ -n "$MC" ] && echo "--max-complexity=$MC")
 
     - name: Lint with isort
       run: isort --check-only .
