@@ -9,7 +9,7 @@ on:
           option.
         type: number
         required: false
-        default: ""
+        default: -1
       python-version:
         description: |-
            Python version for the workflow, passed to
@@ -50,9 +50,7 @@ jobs:
       run: black --check .
 
     - name: Lint with flake8
-      env:
-        MC: ${{ inputs.max-complexity }}
-      run: flake8 --count --show-source --statistics $([ -n "$MC" ] && echo "--max-complexity=$MC")
+      run: flake8 --count --max-complexity=${{ inputs.max-complexity}} --show-source --statistics
 
     - name: Lint with isort
       run: isort --check-only .
