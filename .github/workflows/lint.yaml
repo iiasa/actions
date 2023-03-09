@@ -39,7 +39,9 @@ jobs:
       with:
         python-version: ${{ inputs.python-version }}
         cache: pip
-        cache-dependency-path: "**/setup.cfg"
+        cache-dependency-path: |
+          **/pyproject.toml
+          **/setup.cfg
 
     - name: Upgrade pip; install requirements
       run: |
