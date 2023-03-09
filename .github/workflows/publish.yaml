@@ -33,11 +33,11 @@ jobs:
     - name: Upgrade pip; install requirements
       run: |
         python -m pip install --upgrade pip
-        pip install setuptools-scm twine wheel
+        pip install build twine
 
     - name: Build package
       run: |
-        python3 setup.py bdist_wheel sdist
+        python -m build
         twine check dist/*
 
     # Performed on a new tag
