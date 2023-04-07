@@ -15,15 +15,19 @@ pushd "$GITHUB_ACTION_PATH" || exit
 # - a URL_FRAGMENT used in the download URL
 case $INSTALLER in
   anaconda)
-    INSTALLER_TYPE="Anaconda3"
-    URL_FRAGMENT="archive"
+    INSTALLER_TYPE="Anaconda3-${VERSION}"
+    BASE_URL="https://repo.anaconda.com/archive"
+    ;;
+  mambaforge)
+    INSTALLER_TYPE="Mambaforge"
+    BASE_URL="https://github.com/conda-forge/miniforge/releases/${VERSION}/download"
     ;;
   miniconda)
-    INSTALLER_TYPE="Miniconda3"
-    URL_FRAGMENT="miniconda"
+    INSTALLER_TYPE="Miniconda3-${VERSION}"
+    BASE_URL="https://repo.anaconda.com/miniconda"
     ;;
   *)
-    echo "::error::'installer:' must be one of (anaconda, miniconda); got '$INSTALLER'"
+    echo "::error::'installer:' must be one of (anaconda, mambaforge, miniconda); got '$INSTALLER'"
     exit 1
 esac
 
@@ -51,7 +55,7 @@ esac
 OS=$(echo "$RUNNER_OS" | sed "s/macOS/MacOSX/")
 
 # URL for installer
-URL="https://repo.anaconda.com/$URL_FRAGMENT/${INSTALLER_TYPE}-${VERSION}-${OS}-x86_64.${EXT}"
+URL="${BASE_URL}/${INSTALLER_TYPE}-${OS}-x86_64.${EXT}"
 
 # curl --time-cond only works if the named file exists
 if [ -x "conda.$EXT" ]; then
