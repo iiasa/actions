@@ -65,7 +65,7 @@ fi
 
 # Download installer
 echo "Download from: $URL"
-curl --silent "$URL" --output "conda.$EXT" $TIME_CONDITION
+curl --location --silent "$URL" --output "conda.$EXT" $TIME_CONDITION
 
 # Run the installer
 # - Run in batch/silent mode ("-b" on *nix, "/S" on Windows), accept the licence
