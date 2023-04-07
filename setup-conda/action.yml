@@ -3,7 +3,7 @@ description: "Install Anaconda or Miniconda"
 
 inputs:
   installer:
-    description: "Installer to use"
+    description: "Installer to use: one of anaconda, mambaforge, or miniconda"
     required: true
     default: "anaconda"
   version:

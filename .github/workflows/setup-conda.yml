@@ -24,6 +24,10 @@ jobs:
         - os: windows-latest
           conda: anaconda
           anaconda-version: "2019.03"
+        - os: windows-latest
+          conda: mambaforge
+          anaconda-version: "latest"
+
 
       fail-fast: false
 
@@ -32,10 +36,10 @@ jobs:
 
     steps:
     - name: Check out repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    - name: Setup anaconda (defaults)
-      if: matrix.conda == 'anaconda'
+    - name: Setup anaconda or mamba-forge (defaults)
+      if: matrix.conda == 'anaconda' || matrix.conda == 'mambaforge'
       uses: ./setup-conda
       with:
         # NB no "installer:" key → test that default is used
