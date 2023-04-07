@@ -28,7 +28,6 @@ jobs:
           conda: mambaforge
           anaconda-version: "latest"
 
-
       fail-fast: false
 
     runs-on: ${{ matrix.os }}
@@ -38,12 +37,19 @@ jobs:
     - name: Check out repository
       uses: actions/checkout@v3
 
-    - name: Setup anaconda or mamba-forge (defaults)
-      if: matrix.conda == 'anaconda' || matrix.conda == 'mambaforge'
+    - name: Setup anaconda (defaults)
+      if: matrix.conda == 'anaconda'
       uses: ./setup-conda
       with:
         # NB no "installer:" key → test that default is used
-        version: ${{ matrix.anaconda-version}}
+        installer: ${{ matrix.conda }}
+
+    - name: Setup mambaforge (latest)
+      if: matrix.conda == 'mambaforge'
+      uses: ./setup-conda
+      with:
+        installer: ${{ matrix.conda }}
+        version: latest
 
     - name: Setup miniconda (py39_4.10.3)
       if: matrix.conda == 'miniconda'
