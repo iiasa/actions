@@ -17,14 +17,17 @@ case $INSTALLER in
   anaconda)
     INSTALLER_TYPE="Anaconda3-${VERSION}"
     BASE_URL="https://repo.anaconda.com/archive"
+    CMD="conda"
     ;;
   mambaforge)
     INSTALLER_TYPE="Mambaforge"
     BASE_URL="https://github.com/conda-forge/miniforge/releases/${VERSION}/download"
+    CMD="mamba"
     ;;
   miniconda)
     INSTALLER_TYPE="Miniconda3-${VERSION}"
     BASE_URL="https://repo.anaconda.com/miniconda"
+    CMD="conda"
     ;;
   *)
     echo "::error::'installer:' must be one of (anaconda, mambaforge, miniconda); got '$INSTALLER'"
@@ -89,6 +92,9 @@ esac
 # workflow steps. Note that this uses GITHUB_ACTION_PATH ("/" separated) even on
 # Windows, because this is what GHA expects.
 echo "$GITHUB_ACTION_PATH/$INSTALLER_TYPE/$BINDIR" >> "$GITHUB_PATH"
+
+# Write an output value for subsequent steps
+echo "cmd=$CMD" >> $GITHUB_OUTPUT
 
 # Return to the last directory
 popd || exit
