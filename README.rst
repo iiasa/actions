@@ -60,7 +60,7 @@ Lint and check Python code with black, flake8, isort, and mypy.
 Build Python package distributions; check with ``twine``, and publish to (Test)PyPI.
 
 - `Source <https://github.com/iiasa/actions/blob/main/.github/workflows/publish.yaml>`__
-- Usage example:
+- Usage example (``main`` branch):
 
   .. code-block:: yaml
 
@@ -81,3 +81,29 @@ Build Python package distributions; check with ``twine``, and publish to (Test)P
          secrets:
            PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
            TESTPYPI_TOKEN: ${{ secrets.TESTPYPI_TOKEN }}
+
+  This usage is **deprecated**: workflows using publish.yaml should switch to the ``pypi-trusted`` approach, below.
+  This version will be disabled and cease to work once all known user workflows have migrated.
+
+- The ``pypi-trusted`` branch contains an updated version of this workflow that uses PyPI's new (2023) `Trusted Publisher <https://docs.pypi.org/trusted-publishers/>`__ integration.
+  This obviates the use of secrets, above.
+  To use this branch, specify on the ``uses:`` line.
+
+  .. code-block:: yaml
+
+     name: Build package / publish
+
+     on:
+       pull_request:
+         branches: [ main ]  # Package is built and checked
+       push:
+         branches: [ main ]  # Package is built and checked
+         tags: [ "v*" ]  # Package is pushed to TestPyPI
+       release:
+         types: [ published ]  # Package is also pushed to PyPI
+
+     jobs:
+       publish:
+         uses: iiasa/actions/.github/workflows/publish.yaml@pypi-trusted
+         permissions:
+           id-token: write
