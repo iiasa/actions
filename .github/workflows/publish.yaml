@@ -9,11 +9,6 @@ on:
         type: string
         required: false
         default: "3.x"
-    secrets:
-      PYPI_TOKEN:
-        required: true
-      TESTPYPI_TOKEN:
-        required: true
 
 jobs:
   publish:
@@ -47,14 +42,9 @@ jobs:
       uses: pypa/gh-action-pypi-publish@release/v1
       if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
       with:
-        user: __token__
-        password: ${{ secrets.TESTPYPI_TOKEN }}
         repository-url: https://test.pypi.org/legacy/
 
     # Performed on a release event
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       if: github.event_name == 'release'
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_TOKEN }}
