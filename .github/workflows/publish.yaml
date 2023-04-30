@@ -5,13 +5,21 @@ on:
     inputs:
       python-version:
         description: |-
-           Python version for the workflow, passed to actions/setup-python.
+          Python version for the workflow, passed to actions/setup-python.
         type: string
         required: false
         default: "3.x"
+      environment:
+        description: |-
+          Environment name to use in the workflow.
+        type: string
+        required: false
+        default: "publish"
 
 jobs:
   publish:
+    environment: ${{ inputs.environment }}
+
     runs-on: ubuntu-latest
 
     steps:
