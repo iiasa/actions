@@ -19,6 +19,10 @@ on:
     secrets:
       PYPI_TOKEN:
         required: true
+      TESTPYPI_TOKEN:
+        # Deprecated; has no effect
+        # TODO Remove once unused by dependent workflows
+        required: false
 
 jobs:
   publish:
