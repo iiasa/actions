@@ -11,11 +11,11 @@ on:
         default: "3.x"
       repository-url:
         description: |-
-          Repository URL for twine. Use https://test.pypi.org/ for testing.
+          Repository URL for twine. Use https://test.pypi.org/legacy/ for testing.
         type: string
         required: false
         # NB this default value copied from twine/repository.py
-        default: https://upload.pypi.org/
+        default: https://upload.pypi.org/legacy/
     secrets:
       PYPI_TOKEN:
         required: true

@@ -82,4 +82,4 @@ Build Python package distributions, check with ``twine``, and publish to (Test)P
            PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
          # Publish to TestPyPI; omit with: to publish to PyPI itself
          with:
-           repository-url: https://test.pypi.org/
+           repository-url: https://test.pypi.org/legacy/
