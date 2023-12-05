@@ -15,15 +15,22 @@ pushd "$GITHUB_ACTION_PATH" || exit
 # - a URL_FRAGMENT used in the download URL
 case $INSTALLER in
   anaconda)
-    INSTALLER_TYPE="Anaconda3"
-    URL_FRAGMENT="archive"
+    INSTALLER_TYPE="Anaconda3-${VERSION}"
+    BASE_URL="https://repo.anaconda.com/archive"
+    CMD="conda"
+    ;;
+  mambaforge)
+    INSTALLER_TYPE="Mambaforge"
+    BASE_URL="https://github.com/conda-forge/miniforge/releases/${VERSION}/download"
+    CMD="mamba"
     ;;
   miniconda)
-    INSTALLER_TYPE="Miniconda3"
-    URL_FRAGMENT="miniconda"
+    INSTALLER_TYPE="Miniconda3-${VERSION}"
+    BASE_URL="https://repo.anaconda.com/miniconda"
+    CMD="conda"
     ;;
   *)
-    echo "::error::'installer:' must be one of (anaconda, miniconda); got '$INSTALLER'"
+    echo "::error::'installer:' must be one of (anaconda, mambaforge, miniconda); got '$INSTALLER'"
     exit 1
 esac
 
@@ -51,7 +58,7 @@ esac
 OS=$(echo "$RUNNER_OS" | sed "s/macOS/MacOSX/")
 
 # URL for installer
-URL="https://repo.anaconda.com/$URL_FRAGMENT/${INSTALLER_TYPE}-${VERSION}-${OS}-x86_64.${EXT}"
+URL="${BASE_URL}/${INSTALLER_TYPE}-${OS}-x86_64.${EXT}"
 
 # curl --time-cond only works if the named file exists
 if [ -x "conda.$EXT" ]; then
@@ -61,7 +68,7 @@ fi
 
 # Download installer
 echo "Download from: $URL"
-curl --silent "$URL" --output "conda.$EXT" $TIME_CONDITION
+curl --location --silent "$URL" --output "conda.$EXT" $TIME_CONDITION
 
 # Run the installer
 # - Run in batch/silent mode ("-b" on *nix, "/S" on Windows), accept the licence
@@ -85,6 +92,9 @@ esac
 # workflow steps. Note that this uses GITHUB_ACTION_PATH ("/" separated) even on
 # Windows, because this is what GHA expects.
 echo "$GITHUB_ACTION_PATH/$INSTALLER_TYPE/$BINDIR" >> "$GITHUB_PATH"
+
+# Write an output value for subsequent steps
+echo "cmd=$CMD" >> $GITHUB_OUTPUT
 
 # Return to the last directory
 popd || exit

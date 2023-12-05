@@ -7,6 +7,11 @@ on:
   pull_request:
     branches: [ main ]
 
+# Cancel previous runs that have not completed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   conda:
     strategy:
@@ -24,6 +29,9 @@ jobs:
         - os: windows-latest
           conda: anaconda
           anaconda-version: "2019.03"
+        - os: windows-latest
+          conda: mambaforge
+          anaconda-version: "latest"
 
       fail-fast: false
 
@@ -32,14 +40,22 @@ jobs:
 
     steps:
     - name: Check out repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Setup anaconda (defaults)
       if: matrix.conda == 'anaconda'
       uses: ./setup-conda
       with:
         # NB no "installer:" key → test that default is used
-        version: ${{ matrix.anaconda-version}}
+        installer: ${{ matrix.conda }}
+
+    - name: Setup mambaforge (latest)
+      id: install-mamba
+      if: matrix.conda == 'mambaforge'
+      uses: ./setup-conda
+      with:
+        installer: ${{ matrix.conda }}
+        version: latest
 
     - name: Setup miniconda (py39_4.10.3)
       if: matrix.conda == 'miniconda'
@@ -48,5 +64,6 @@ jobs:
         installer: ${{ matrix.conda }}
         version: py39_4.10.3
 
-    - name: Check conda version and location
-      run: conda info
+    - name: Check mamba version and location
+      if: matrix.conda == 'mambaforge'
+      run: ${{ steps.install-mamba.cmd }} info

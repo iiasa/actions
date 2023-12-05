@@ -3,7 +3,7 @@ description: "Install Anaconda or Miniconda"
 
 inputs:
   installer:
-    description: "Installer to use"
+    description: "Installer to use: one of anaconda, mambaforge, or miniconda"
     required: true
     default: "anaconda"
   version:
@@ -13,8 +13,11 @@ inputs:
 
 outputs:
   cache-path:
-    description: "Path to the conda installer, e.g. for use with actions/cache."
+    description: "Path to the installer, e.g. for use with actions/cache."
     value: ${{ steps.install.outputs.cache-path }}
+  cmd:
+    description: "Executable name of the installed package manager: 'conda' or 'mamba'."
+    value: ${{ steps.install.outputs.cmd }}
 
 runs:
   using: composite
@@ -27,6 +30,6 @@ runs:
     run: ${GITHUB_ACTION_PATH}/script.sh
     shell: bash
 
-  - name: Confirm installed conda is on PATH
-    run: conda info
+  - name: Confirm installed package manager is on PATH
+    run: ${{ steps.install.outputs.cmd }} info
     shell: bash
