@@ -28,11 +28,9 @@ CACHE_PATH="$GITHUB_ACTION_PATH/gams.exe"
 # Path fragment for extraction or install
 DEST=gams$(echo $GAMS_VERSION | cut -d. -f1-2)_$FRAGMENT
 
-ls -a
-
 # Write to special GitHub Actions environment variable to update $PATH for
 # subsequent workflow steps
-echo "$GITHUB_ACTION_PATH/$DEST" >> $GITHUB_PATH
+echo "$BASE" >> $GITHUB_PATH
 
 # Set the "steps.{id}.outputs.cache-patch" value for use with actions/cache
 echo "cache-path=$CACHE_PATH" >> $GITHUB_OUTPUT
@@ -47,16 +45,17 @@ if [ -x gams.exe ]; then
   TIME_CONDITION=--remote-time --time-cond gams.exe
 fi
 
+cd gams
 curl --silent $URL --output gams.exe $TIME_CONDITION
 
-ls -a
+ls -al
 
 # TODO confirm checksum
 
 if [ $GAMS_OS = "windows" ]; then
   # Write a PowerShell script. Install to the same directory as *nix unzip
   cat << EOF >install-gams.ps1
-Start-Process "gams.exe" "/SP-", "/DIR=$GITHUB_ACTION_PATH\\$DEST", "/NORESTART" -Wait
+Start-Process "gams.exe" "/SP-", "/SILENT", "/DIR=$GITHUB_ACTION_PATH\\gams", "/NORESTART" -Wait
 EOF
   cat install-gams.ps1
 
