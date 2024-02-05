@@ -47,7 +47,7 @@ fi
 
 curl $URL --output gams.exe $TIME_CONDITION
 
-ls -al $GITHUB_ACTION_PATH/$DEST
+ls -al
 
 # TODO confirm checksum
 
