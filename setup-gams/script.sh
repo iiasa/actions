@@ -10,24 +10,25 @@ BASE=$(realpath gams)
 # GAMS source URL fragment, and path fragment for extracted files
 case $RUNNER_OS in
   Linux)
-    CACHE_PATH="$GITHUB_ACTION_PATH/gams.exe"
     GAMS_OS=linux
     FRAGMENT=${GAMS_OS}_x64_64_sfx
     ;;
   macOS)
-    CACHE_PATH="$GITHUB_ACTION_PATH/gams.exe"
     GAMS_OS=macosx
     FRAGMENT=osx_x64_64_sfx
     ;;
   Windows)
-    CACHE_PATH="$GHA_PATH\\gams.exe"
     GAMS_OS=windows
     FRAGMENT=${GAMS_OS}_x64_64
     ;;
 esac
 
+CACHE_PATH="$GITHUB_ACTION_PATH/gams.exe"
+
 # Path fragment for extraction or install
 DEST=gams$(echo $GAMS_VERSION | cut -d. -f1-2)_$FRAGMENT
+
+ls -a
 
 # Write to special GitHub Actions environment variable to update $PATH for
 # subsequent workflow steps
@@ -48,12 +49,14 @@ fi
 
 curl --silent $URL --output gams.exe $TIME_CONDITION
 
+ls -a
+
 # TODO confirm checksum
 
 if [ $GAMS_OS = "windows" ]; then
   # Write a PowerShell script. Install to the same directory as *nix unzip
   cat << EOF >install-gams.ps1
-Start-Process "gams.exe" "/SP-", "/SILENT", "/DIR=$GHA_PATH\\$DEST", "/NORESTART" -Wait
+Start-Process "gams.exe" "/SP-", "/DIR=$GITHUB_ACTION_PATH\\$DEST", "/NORESTART" -Wait
 EOF
   cat install-gams.ps1
 

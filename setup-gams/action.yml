@@ -24,8 +24,7 @@ runs:
     env:
       RUNNER_OS: ${{ runner.os }}
       GAMS_VERSION: ${{ inputs.version }}
-      GHA_PATH: ${{ github.action_path }}
-    run: ${GITHUB_ACTION_PATH}/script.sh
+    run: ${{ github.action_path }}/script.sh
     shell: bash
 
   - name: Set up GAMS license
