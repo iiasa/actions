@@ -48,6 +48,9 @@ fi
 curl $URL --output gams.exe $TIME_CONDITION -v
 
 ls -al "/usr/ssl/certs/"
+curl-config --ca
+
+printenv | grep "ssl/certs"
 
 # TODO confirm checksum
 
