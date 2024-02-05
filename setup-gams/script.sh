@@ -45,10 +45,9 @@ if [ -x gams.exe ]; then
   TIME_CONDITION=--remote-time --time-cond gams.exe
 fi
 
-curl $URL --output gams.exe $TIME_CONDITION --trace trace.txt
-cat trace.txt
+curl $URL --output gams.exe $TIME_CONDITION -v
 
-ls -al
+ls -al "/usr/ssl/certs/"
 
 # TODO confirm checksum
 
