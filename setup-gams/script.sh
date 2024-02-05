@@ -54,7 +54,7 @@ ls -al
 if [ $GAMS_OS = "windows" ]; then
   # Write a PowerShell script. Install to the same directory as *nix unzip
   cat << EOF >install-gams.ps1
-Start-Process "gams.exe" "/SP-", "/SILENT", "/DIR=$GITHUB_ACTION_PATH\\gams", "/NORESTART" -Wait
+Start-Process "gams.exe" "/SP-", "/SILENT", "/DIR=$GITHUB_ACTION_PATH\\$DEST", "/NORESTART" -Wait
 EOF
   cat install-gams.ps1
 
@@ -64,6 +64,8 @@ else
   # Extract files
   unzip -q gams.exe
 fi
+
+ls -al
 
 # Return to the last directory
 popd
