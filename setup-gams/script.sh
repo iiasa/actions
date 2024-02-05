@@ -56,6 +56,8 @@ printenv | grep "ssl/certs"
 echo $URL
 echo $TIME_CONDITION
 
+curl --version
+
 curl --output gams.exe $TIME_CONDITION -v $URL
 
 # TODO confirm checksum
