@@ -30,7 +30,7 @@ DEST=gams$(echo $GAMS_VERSION | cut -d. -f1-2)_$FRAGMENT
 
 # Write to special GitHub Actions environment variable to update $PATH for
 # subsequent workflow steps
-echo "$BASE" >> $GITHUB_PATH
+echo "$GITHUB_ACTION_PATH/$DEST" >> $GITHUB_PATH
 
 # Set the "steps.{id}.outputs.cache-patch" value for use with actions/cache
 echo "cache-path=$CACHE_PATH" >> $GITHUB_OUTPUT
@@ -45,10 +45,9 @@ if [ -x gams.exe ]; then
   TIME_CONDITION=--remote-time --time-cond gams.exe
 fi
 
-cd gams
-curl --silent $URL --output gams.exe $TIME_CONDITION
+curl $URL --output gams.exe $TIME_CONDITION
 
-ls -al
+ls -al $GITHUB_ACTION_PATH/$DEST
 
 # TODO confirm checksum
 
