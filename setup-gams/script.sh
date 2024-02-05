@@ -53,7 +53,10 @@ curl-config --ca
 echo "printenv"
 printenv | grep "ssl/certs"
 
-curl $URL --output gams.exe $TIME_CONDITION -v
+echo $URL
+echo $TIME_CONDITION
+
+curl --output gams.exe $TIME_CONDITION -v $URL
 
 # TODO confirm checksum
 
