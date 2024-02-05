@@ -45,7 +45,8 @@ if [ -x gams.exe ]; then
   TIME_CONDITION=--remote-time --time-cond gams.exe
 fi
 
-curl $URL --output gams.exe $TIME_CONDITION -v
+curl $URL --output gams.exe $TIME_CONDITION --trace trace.txt
+cat trace.txt
 
 ls -al
 
