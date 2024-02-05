@@ -45,7 +45,7 @@ if [ -x gams.exe ]; then
   TIME_CONDITION=--remote-time --time-cond gams.exe
 fi
 
-curl $URL --output gams.exe $TIME_CONDITION
+curl $URL --output gams.exe $TIME_CONDITION -v
 
 ls -al
 
@@ -64,8 +64,6 @@ else
   # Extract files
   unzip -q gams.exe
 fi
-
-ls -al
 
 # Return to the last directory
 popd
