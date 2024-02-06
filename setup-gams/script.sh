@@ -45,7 +45,7 @@ if [ -x gams.exe ]; then
   TIME_CONDITION=--remote-time --time-cond gams.exe
 fi
 
-curl --output gams.exe $TIME_CONDITION -v $URL
+curl --output gams.exe $TIME_CONDITION $URL
 
 # TODO confirm checksum
 
