@@ -45,19 +45,6 @@ if [ -x gams.exe ]; then
   TIME_CONDITION=--remote-time --time-cond gams.exe
 fi
 
-ls -al "/usr/ssl/certs/"
-
-echo "curl-config:"
-curl-config --ca
-
-echo "printenv"
-printenv | grep "ssl/certs"
-
-echo $URL
-echo $TIME_CONDITION
-
-curl --version
-
 curl --output gams.exe $TIME_CONDITION -v $URL
 
 # TODO confirm checksum
