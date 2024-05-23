@@ -25,6 +25,9 @@ case $RUNNER_OS-$RUNNER_ARCH in
     GAMS_OS=windows
     FRAGMENT=${GAMS_OS}_x64_64
     ;;
+  *)
+    echo "Unknown runner OS '$RUNNER_OS' and arch '$RUNNER_ARCH'"
+    exit 1
 esac
 
 CACHE_PATH="$GITHUB_ACTION_PATH/gams.exe"
