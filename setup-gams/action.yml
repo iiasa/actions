@@ -1,5 +1,5 @@
-name: "Setup GAMS"
-description: "Install the GAMS executable."
+name: Set up GAMS
+description: Install the GAMS executable.
 
 inputs:
   license:
@@ -10,11 +10,6 @@ inputs:
     description: "Version of GAMS to install"
     required: false
     default: "25.1.1"
-
-outputs:
-  cache-path:
-    description: "Path to the GAMS installer, e.g. for use with actions/cache."
-    value: ${{ steps.install.outputs.cache-path }}
 
 runs:
   using: composite
@@ -34,7 +29,7 @@ runs:
         !${{ steps.path.outputs.install }}/gamslice.txt
       key: setup-gams-${{ runner.os }}-${{ runner.arch }}-${{ inputs.version }}
 
-  - name: Install GAMS
+  - name: Set up GAMS
     env:
       GAMS_LICENSE: ${{ inputs.license }}
     run: ${GITHUB_ACTION_PATH}/script.py install ${{ inputs.version }}
