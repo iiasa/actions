@@ -1,0 +1,37 @@
+name: Validate setup-gams action
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'setup-gams/**' ]
+  pull_request:
+    branches: [ main ]
+    paths: [ 'setup-gams/**' ]
+
+jobs:
+  gams:
+    strategy:
+      matrix:
+        os:
+        - macos-13  # x86_64
+        - macos-latest  # arm64
+        - ubuntu-latest
+        - windows-latest
+        version:
+        - 25.1.1
+        - 43.4.1
+
+      fail-fast: false
+
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }}-${{ matrix.version }}
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v4
+
+    - name: Test action
+      uses: ./setup-gams
+
+    - name: Confirm install
+      run: gams
