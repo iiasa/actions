@@ -40,9 +40,9 @@ runs:
     run: ${GITHUB_ACTION_PATH}/script.py install ${{ inputs.version }}
     shell: bash
 
-  - name: Show contents of working directory
-    run: ls -lR
-    shell: bash
+  # - name: Show contents of working directory
+  #   run: ls -lR
+  #   shell: bash
 
   - name: Cache GAMS distribution and installed files
     if: "! ${{ steps.restore-cache.outputs.cache-hit }}"
