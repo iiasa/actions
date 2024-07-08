@@ -1,11 +1,12 @@
-# Verify that the setup-conda action works
-
 name: Validate setup-conda action
+
 on:
   push:
     branches: [ main ]
+    paths: [ 'setup-conda/**' ]
   pull_request:
     branches: [ main ]
+    paths: [ 'setup-conda/**' ]
 
 jobs:
   conda:

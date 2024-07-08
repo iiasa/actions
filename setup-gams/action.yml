@@ -1,5 +1,5 @@
-name: "Setup GAMS"
-description: "Install the GAMS executable."
+name: Set up GAMS
+description: Install the GAMS executable.
 
 inputs:
   license:
@@ -11,31 +11,40 @@ inputs:
     required: false
     default: "25.1.1"
 
-outputs:
-  cache-path:
-    description: "Path to the GAMS installer, e.g. for use with actions/cache."
-    value: ${{ steps.install.outputs.cache-path }}
-
 runs:
-  using: "composite"
+  using: composite
   steps:
-  - name: Install GAMS
-    id: install
-    env:
-      RUNNER_OS: ${{ runner.os }}
-      GAMS_VERSION: ${{ inputs.version }}
-    run: ${GITHUB_ACTION_PATH}/script.sh
+  - name: Identify cache paths
+    id: path
+    run: ${GITHUB_ACTION_PATH}/script.py pre ${{ inputs.version }}
     shell: bash
 
-  - name: Set up GAMS license
+  - name: Restore cache, if any
+    id: restore-cache
+    uses: actions/cache/restore@v4
+    with:
+      path: |
+        ${{ steps.path.outputs.dist }}
+        ${{ steps.path.outputs.install }}
+        !${{ steps.path.outputs.install }}/gamslice.txt
+      key: setup-gams-${{ runner.os }}-${{ runner.arch }}-${{ inputs.version }}
+
+  - name: Set up GAMS
     env:
       GAMS_LICENSE: ${{ inputs.license }}
-    run: |
-      if [ -n "$GAMS_LICENSE" ]; then
-        echo "$GAMS_LICENSE" > $(dirname $(which gams))/gamslice.txt
-      fi
+    run: ${GITHUB_ACTION_PATH}/script.py install ${{ inputs.version }}
     shell: bash
 
-  - name: Confirm GAMS is on PATH & license is recognized
-    run: gams
-    shell: bash
+  # - name: Show contents of working directory
+  #   run: ls -lR
+  #   shell: bash
+
+  - name: Cache GAMS distribution and installed files
+    if: "! ${{ steps.restore-cache.outputs.cache-hit }}"
+    uses: actions/cache/save@v4
+    with:
+      path: |
+        ${{ steps.path.outputs.dist }}
+        ${{ steps.path.outputs.install }}
+        !${{ steps.path.outputs.install }}/gamslice.txt
+      key: setup-gams-${{ runner.os }}-${{ runner.arch }}-${{ inputs.version }}
