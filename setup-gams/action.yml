@@ -29,12 +29,13 @@ runs:
         !${{ steps.path.outputs.install }}/gamslice.txt
       key: setup-gams-${{ runner.os }}-${{ runner.arch }}-${{ inputs.version }}
 
+  - name: Set up GAMS_LICENSE environment variable
+    run: echo "GAMS_LICENSE=${{ inputs.license }}" >> $GITHUB_ENV
+
   - name: Set up GAMS
-    env:
-      GAMS_LICENSE: ${{ inputs.license }}
-    run: |
-      echo "GAMS_LICENSE=${{ env.GAMS_LICENSE }}" >> $GITHUB_ENV
-      ${GITHUB_ACTION_PATH}/script.py install ${{ inputs.version }}
+    # env:
+    #   GAMS_LICENSE: ${{ inputs.license }}
+    run: ${GITHUB_ACTION_PATH}/script.py install ${{ inputs.version }}
     shell: bash
 
   # - name: Show contents of working directory
