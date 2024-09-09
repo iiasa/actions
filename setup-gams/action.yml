@@ -13,8 +13,6 @@ inputs:
 
 runs:
   using: composite
-  env:
-    GAMS_LICENSE: ${{ inputs.license }}
   steps:
   - name: Identify cache paths
     id: path
@@ -37,8 +35,8 @@ runs:
     shell: bash
 
   - name: Set up GAMS
-    # env:
-    #   GAMS_LICENSE: ${{ inputs.license }}
+    env:
+      GAMS_LICENSE: ${{ inputs.license }}
     run: ${GITHUB_ACTION_PATH}/script.py install ${{ inputs.version }}
     shell: bash
 
