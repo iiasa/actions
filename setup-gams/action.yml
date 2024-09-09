@@ -13,6 +13,8 @@ inputs:
 
 runs:
   using: composite
+  env:
+    GAMS_LICENSE: ${{ inputs.license }}
   steps:
   - name: Identify cache paths
     id: path
@@ -30,7 +32,8 @@ runs:
       key: setup-gams-${{ runner.os }}-${{ runner.arch }}-${{ inputs.version }}
 
   - name: Set up GAMS_LICENSE environment variable
-    run: echo "GAMS_LICENSE=${{ inputs.license }}" >> $GITHUB_ENV
+    if: runner.os == "Windows"
+    run: echo "GAMS_LICENSE=${{ inputs.license }}" >> $env:GITHUB_ENV
     shell: bash
 
   - name: Set up GAMS
