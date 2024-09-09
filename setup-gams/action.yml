@@ -30,7 +30,7 @@ runs:
       key: setup-gams-${{ runner.os }}-${{ runner.arch }}-${{ inputs.version }}
 
   - name: Set up GAMS_LICENSE environment variable
-    if: runner.os == "Windows"
+    if: runner.os == 'Windows'
     run: echo "GAMS_LICENSE=${{ inputs.license }}" >> $env:GITHUB_ENV
     shell: bash
 
