@@ -31,7 +31,7 @@ runs:
 
   - name: Set up GAMS
     run: |
-      echo "GAMS_LICENSE=${{ inputs.license }}" >> "$GITHUB_ENV"
+      echo "GAMS_LICENSE=${{ inputs.license }}" >> $GITHUB_ENV
       ${GITHUB_ACTION_PATH}/script.py install ${{ inputs.version }}
     shell: bash
 
