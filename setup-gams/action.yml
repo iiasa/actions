@@ -30,9 +30,13 @@ runs:
       key: setup-gams-${{ runner.os }}-${{ runner.arch }}-${{ inputs.version }}
 
   - name: Set up GAMS
-    env:
-      GAMS_LICENSE: ${{ inputs.license }}
-    run: ${GITHUB_ACTION_PATH}/script.py install ${{ inputs.version }}
+    run: |
+      {
+        echo "GAMS_LICENSE<<EOF"
+        ${{ inputs.license }}
+        echo EOF
+      } >> "$GITHUB_ENV"
+      ${GITHUB_ACTION_PATH}/script.py install ${{ inputs.version }}
     shell: bash
 
   # - name: Show contents of working directory
