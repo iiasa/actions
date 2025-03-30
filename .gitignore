@@ -1,2 +1,6 @@
+# Python, pytest et al.
+.benchmarks
+.pytest_cache
+
 # Editors, IDEs
 .vscode
