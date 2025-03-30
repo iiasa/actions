@@ -9,6 +9,12 @@ on:
         type: string
         required: false
         default: "3.x"
+      lfs:
+        description: |-
+          Use Git LFS when cloning the source repo.
+        type: boolean
+        required: false
+        default: false
       repository-url:
         description: |-
           Repository URL for twine. Use https://test.pypi.org/legacy/ for testing.
@@ -32,6 +38,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        lfs: ${{ inputs.lfs }}
 
     - uses: actions/setup-python@v5
       with:
