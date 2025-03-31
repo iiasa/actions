@@ -31,6 +31,12 @@ The usage examples are from the workflows of the same name in `iiasa/ixmp <https
 ``lint.yaml``
 -------------
 
+   **Important:**
+   This workflow is no longer used in most IIASA ECE program repositories.
+   Instead, an ordinary job is used to invoke `pre-commit <https://pre-commit.com>`_ via `uvx <https://docs.astral.sh/uv/guides/tools/>`_.
+   See `iiasa/message_ix/.github/workflows.pytest.yaml <https://github.com/iiasa/message_ix/blob/1edda554fc38d439073f6bdbd6195015cb29fb4d/.github/workflows/pytest.yaml#L220-L236>`_ for an example.
+   Pre-commit in turn allows to configure a repo-specific set of checks and check arguments, whereas this reusable action used a fixed set.
+
 Lint and check Python code with black, flake8, isort, and mypy.
 
 - `Source <https://github.com/iiasa/actions/blob/main/.github/workflows/lint.yaml>`__.
