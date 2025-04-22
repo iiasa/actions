@@ -78,7 +78,12 @@ if __name__ == "__main__":
         or install_dir.joinpath("gams.exe").is_file()
     ):
         pass  # Already exists, e.g. restored from cache → skip install
-    elif uname.system == "Windows":
+    else:
+        # Extract files (in the current working directory)
+        run(["unzip", "-q", str(dl_path)])
+
+    # Complete the setup on Windows
+    if uname.system == "Windows":
         # Write and invoke a PowerShell script that invokes the installer
         script_path = Path("setup-gams.ps1")
         script_path.write_text(
@@ -86,9 +91,6 @@ if __name__ == "__main__":
             '"/NORESTART" -Wait'
         )
         run(["pwsh", str(script_path)])
-    else:
-        # Extract files (in the current working directory)
-        run(["unzip", "-q", str(dl_path)])
 
     # Install license
     license = os.environ.pop("GAMS_LICENSE")
