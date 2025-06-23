@@ -13,7 +13,7 @@ inputs:
   use-cache:
     description: "True to save and restore cache"
     required: false
-    default: true
+    default: "true"
 
 runs:
   using: composite
@@ -25,7 +25,7 @@ runs:
 
   - name: Restore cache, if any
     id: restore-cache
-    if: inputs.use-cache
+    if: fromJSON(inputs.use-cache)
     uses: actions/cache/restore@v4
     with:
       path: |
@@ -45,7 +45,7 @@ runs:
   #   shell: bash
 
   - name: Cache GAMS distribution and installed files
-    if: "${{ inputs.use-cache }} && ! ${{ steps.restore-cache.outputs.cache-hit }}"
+    if: fromJSON(inputs.use-cache) && !steps.restore-cache.outputs.cache-hit
     uses: actions/cache/save@v4
     with:
       path: |
