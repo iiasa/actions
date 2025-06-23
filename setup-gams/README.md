@@ -10,4 +10,6 @@ steps:
     version: 25.1.1
     # Content for gamslice.txt, e.g. from a repository secret
     license: ${{ secrets.GAMS_LICENSE }}
+    # True to save and restore cache
+    use-cache: true
 ```
