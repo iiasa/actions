@@ -21,6 +21,9 @@ jobs:
         - 25.1.1
         - 43.4.1
         - 48.6.1
+        use-cache:
+        - true
+        - false
 
         exclude:
         # No arm64 distribution for this version
@@ -40,6 +43,7 @@ jobs:
       uses: ./setup-gams
       with:
         version: ${{ matrix.version }}
+        use-cache: ${{ matrix.use-cache }}
 
     - name: Confirm GAMS is on PATH & license is recognized
       run: gams
