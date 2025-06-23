@@ -10,6 +10,10 @@ inputs:
     description: "Version of GAMS to install"
     required: false
     default: "25.1.1"
+  use-cache:
+    description: "True to save and restore cache"
+    required: false
+    default: true
 
 runs:
   using: composite
@@ -21,6 +25,7 @@ runs:
 
   - name: Restore cache, if any
     id: restore-cache
+    if: inputs.use-cache
     uses: actions/cache/restore@v4
     with:
       path: |
@@ -40,7 +45,7 @@ runs:
   #   shell: bash
 
   - name: Cache GAMS distribution and installed files
-    if: "! ${{ steps.restore-cache.outputs.cache-hit }}"
+    if: "${{ inputs.use-cache }} && ! ${{ steps.restore-cache.outputs.cache-hit }}"
     uses: actions/cache/save@v4
     with:
       path: |

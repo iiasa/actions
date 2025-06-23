@@ -4,7 +4,7 @@ import os
 import platform
 import sys
 from pathlib import Path
-from subprocess import run
+from subprocess import CompletedProcess, run
 from typing import Tuple
 
 
@@ -77,7 +77,8 @@ if __name__ == "__main__":
         install_dir.joinpath("gams").is_file()
         or install_dir.joinpath("gams.exe").is_file()
     ):
-        pass  # Already exists, e.g. restored from cache → skip install
+        # Already exists, e.g. restored from cache → skip install
+        result: "CompletedProcess" = CompletedProcess([], returncode=0)
     elif uname.system == "Windows":
         # Write and invoke a PowerShell script that invokes the installer
         script_path = Path("setup-gams.ps1")
@@ -85,10 +86,14 @@ if __name__ == "__main__":
             f'Start-Process "gams.exe" "/SP-", "/SILENT", "/DIR={install_dir}", '
             '"/NORESTART" -Wait'
         )
-        run(["pwsh", str(script_path)])
+        result = run(["pwsh", str(script_path)])
     else:
         # Extract files (in the current working directory)
-        run(["unzip", "-q", str(dl_path)])
+        result = run(["unzip", "-q", str(dl_path)])
+
+    # Propagate any exception
+    if result.returncode:
+        sys.exit(result.returncode)
 
     # Install license
     license = os.environ.pop("GAMS_LICENSE")
