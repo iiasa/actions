@@ -104,3 +104,5 @@ if __name__ == "__main__":
     # Write to GitHub Actions environment variable to update $PATH for subsequent steps
     with open(os.environ["GITHUB_PATH"], "a") as f:
         f.write(str(install_dir) + "\n")
+
+    print(f"GAMS installed at {install_dir}")
