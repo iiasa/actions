@@ -26,7 +26,7 @@ runs:
   - name: Restore cache, if any
     id: restore-cache
     if: fromJSON(inputs.use-cache)
-    uses: actions/cache/restore@v4
+    uses: actions/cache/restore@v5
     with:
       path: |
         ${{ steps.path.outputs.dist }}
@@ -46,7 +46,7 @@ runs:
 
   - name: Cache GAMS distribution and installed files
     if: fromJSON(inputs.use-cache) && !steps.restore-cache.outputs.cache-hit
-    uses: actions/cache/save@v4
+    uses: actions/cache/save@v5
     with:
       path: |
         ${{ steps.path.outputs.dist }}
