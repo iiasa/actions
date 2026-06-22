@@ -1,5 +1,6 @@
 # Python, pytest et al.
 .benchmarks
+.dmypy.json
 .pytest_cache
 
 # Editors, IDEs
